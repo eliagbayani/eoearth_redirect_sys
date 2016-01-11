@@ -32,7 +32,6 @@ $ctrler = new eoearth_redirect_controller();
 if($title = $ctrler->search_path($path))
 {
     echo $ctrler->render_template('titlesearch-found', array('title' => $title));
-    
     $url = $ctrler->create_url($title);
     require_once("config/script-below-entry.html.php");
 }
