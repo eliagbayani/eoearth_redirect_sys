@@ -86,6 +86,15 @@ class eoearth_redirect_controller
 
     function create_url($title)
     {
+        // start -- for non-HTML pages
+        $path_info = pathinfo($_SERVER['REQUEST_URI']);
+        if(in_array(@$path_info['extension'], array("pdf", "xls", "jpg", "gif")))
+        {
+            return "http://" . WIKI_DOMAIN . "/" . MEDIAWIKI_FOLDER . "/wiki/File:" . $path_info['basename'];
+            // "http://editors.eol.localhost/eoearth/wiki/File:Nasa-part-1.pdf"
+        }
+        // end -- for non-HTML pages
+        
         return "http://" . WIKI_DOMAIN . "/" . MEDIAWIKI_FOLDER . "/wiki/" . $title;
     }
     
