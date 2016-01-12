@@ -1,17 +1,16 @@
 <?php
 class eoearth_redirect_controller
 {
-    /*
-    function __construct($params)
+    function __construct()
     {
+        $this->non_html_extensions = array("pdf", "xls", "xlsx", "csv", "txt", "doc", "png", "ppt", "pptx", "ods", "jp2", "webp", "svg", "png", "jpg", "jpeg", "gif", "bmp");
     }
-    */
 
     function search_path($path)
     {
         $paths = array();
         $path = trim($path);
-        // echo "\n[$path]\n";
+
         //-start
         /*
         from website: http://www.eoearth.org/view/article/51cbf1ef7896bb431f6a73ac/?topic=51cbfc78f702fc2ba8129e5f
@@ -88,7 +87,7 @@ class eoearth_redirect_controller
     {
         // start -- for non-HTML pages
         $path_info = pathinfo($_SERVER['REQUEST_URI']);
-        if(in_array(@$path_info['extension'], array("pdf", "xls", "jpg", "gif")))
+        if(in_array(@$path_info['extension'], $this->non_html_extensions))
         {
             return "http://" . WIKI_DOMAIN . "/" . MEDIAWIKI_FOLDER . "/wiki/File:" . $path_info['basename'];
             // "http://editors.eol.localhost/eoearth/wiki/File:Nasa-part-1.pdf"
