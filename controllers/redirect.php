@@ -68,6 +68,7 @@ class eoearth_redirect_controller
     
     function find_title_from_path($path)
     {
+        $path = str_replace("eoearth_redirect_sys/", "", $path);
         $conn = mysqli_connect(SERVERNAME, USERNAME, PASSWORD, DBNAME);
         if(!$conn) die("Connection failed: " . mysqli_connect_error());
         $sql = "SELECT title FROM redirects WHERE path = '$path'";
