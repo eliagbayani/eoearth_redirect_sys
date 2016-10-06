@@ -68,11 +68,13 @@ class eoearth_redirect_controller
     
     function find_title_from_path($path)
     {
+        $path = str_replace("//", "/", $path);
         $path = str_replace("eoearth_redirect_sys/", "", $path);
+        
         $conn = mysqli_connect(SERVERNAME, USERNAME, PASSWORD, DBNAME);
         if(!$conn) die("Connection failed: " . mysqli_connect_error());
         $sql = "SELECT title FROM redirects WHERE path = '$path'";
-        echo "<br>$path<br>";
+        // echo "<br>$path<br>";
         $result = mysqli_query($conn, $sql);
         if (mysqli_num_rows($result) > 0)
         {
@@ -101,6 +103,12 @@ class eoearth_redirect_controller
     
     function create_old_url()
     {
+        $temp = "http://" . "www.eoearth.org" . $_SERVER['REQUEST_URI'];
+        $temp = str_replace("eoearth_redirect_sys/", "", $temp);
+        return $temp;
+        
+        
+        //working with the orig scheme using www.eoearth.localhost
         return "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
     }
     
