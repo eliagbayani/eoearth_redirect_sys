@@ -71,6 +71,7 @@ class eoearth_redirect_controller
         $conn = mysqli_connect(SERVERNAME, USERNAME, PASSWORD, DBNAME);
         if(!$conn) die("Connection failed: " . mysqli_connect_error());
         $sql = "SELECT title FROM redirects WHERE path = '$path'";
+        echo "<br>$sql<br>";
         $result = mysqli_query($conn, $sql);
         if (mysqli_num_rows($result) > 0)
         {
