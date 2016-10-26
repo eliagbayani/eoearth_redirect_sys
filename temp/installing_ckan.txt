@@ -1,0 +1,471 @@
+login for local CKAN on Mac
+username = eagbayani and eliagbayani
+pw = eli3
+———————————————————————————————
+API Guide:	http://docs.ckan.org/en/latest/api/index.html
+API calls examples: https://gist.github.com/mheadd/a9bb37a51972cbff8ae0
+SysAdmin Guide:	http://docs.ckan.org/en/latest/sysadmin-guide.html
+
+rebuild solr index:	paster --plugin=ckan search-index rebuild --config=/etc/ckan/default/development.ini
+———————————————————————————————
+
+sudo port install solr4 	{this didn’t work in Mac OS}
+sudo port install apache-solr4	{this worked OK} -> this helped: All about MacPorts: http://blog.kicaj.com/installing-macports/
+
+———————————————————————————————
+
+All about HomeBrew: https://coolestguidesontheplanet.com/installing-homebrew-on-os-x-el-capitan-10-11-package-manager-for-unix-apps/
+
+———————————————————————————————
+Running CKAN:
+-> run solr from anywhere in command-line
+sudo solr4
+
+-> startup CKAN
+. /usr/lib/ckan/default/bin/activate
+cd /usr/lib/ckan/default/src/ckan
+paster serve /etc/ckan/default/development.ini
+
+-> startup DataPusher
+cd ~/datapusher
+python datapusher/main.py deployment/datapusher_settings.py
+———————————————————————————————
+
+Installed two more extensions:
+
+1. CKAN: opendata project
+We now have a stats page: - from the Stats extension
+https://dl.dropboxusercontent.com/u/5763406/ckan/screenshots/Stats.png
+http://docs.ckan.org/en/latest/maintaining/stats.html
+http://127.0.0.1:5000/stats#most-create
+
+We now have Page View Tracking:
+https://dl.dropboxusercontent.com/u/5763406/ckan/screenshots/PageViewTracking.png
+http://docs.ckan.org/en/latest/maintaining/tracking.html#tracking
+
+This means:
+- Sorting Datasets by Popularity
+- Highlighting Popular Datasets and Resources
+
+
+====================================================================================
+TESTING setup of DataStore
+curl -X GET "http://127.0.0.1:5000/api/3/action/datastore_search?resource_id=_table_metadata"
+
+EliAgbayani API Key: 0b5022e7-2497-4f7e-9541-c02e77c18318
+
+curl -X POST http://127.0.0.1:5000/api/3/action/datastore_create -H "Authorization: 0b5022e7-2497-4f7e-9541-c02e77c18318" -d '{"resource": {"package_id": "d7a72876-f994-4bf3-9cf2-216c4fa41138"}, "fields": [ {"id": "sciname"}, {"id": "vernacular"} ], "records": [ { "sciname": "Gadus morhua", "vernacular": "atlantic code"}, {"sciname": "Chanos chanos", "vernacular": "bangus"} ]}'
+
+curl -X POST http://127.0.0.1:5000/api/3/action/datastore_create -H "Authorization: 0b5022e7-2497-4f7e-9541-c02e77c18318" -d '{"resource": {"package_id": "d7a72876-f994-4bf3-9cf2-216c4fa41138"}, "fields": [{"id": "_id"}, {"id": "sciname"}, {"id": "vernacular"} ], "records": [ { "sciname": "Gadus morhua", "vernacular": "atlantic code"}, {"sciname": "Chanos chanos", "vernacular": "bangus"} ]}'
+
+
+curl -X POST http://127.0.0.1:5000/api/3/action/datastore_create -H "Authorization: {YOUR-API-KEY}" -d '{"resource": {"package_id": "{PACKAGE-ID}"}, "fields": [ {"id": "a"}, {"id": "b"} ], "records": [ { "a": 1, "b": "xyz"}, {"a": 2, "b": "zzz"} ]}'
+
+http://127.0.0.1:5000/api/3/action/datastore_search?resource_id=ea2cf409-8465-4a09-b48a-30a8ec07288b
+-> use resource_id from result above
+====================================================================================
+
+====================================================================================
+INSTALLING DataPusher (Development purposes)
+====================================================================================
+1. 
+git clone https://github.com/ckan/datapusher
+cd datapusher
+2.
+pip install -r requirements.txt
+pip install -e .
+3.
+python datapusher/main.py deployment/datapusher_settings.py
+
+FIXES on DataPusher
+https://github.com/bcgov/ckan/commit/241aa38504cc49984cedcd710f8327b3f6eafaab
+-> this will fix the infinite datapushing
+-> this is to edit these 2 files (that is to use str(datetime.datetime.utcnow() instead of str(datetime.datetime.now())
+ckanext/datapusher/logic/action.py
+ckanext/datapusher/tests/test_action.py
+
+
+#added by Eli, edit datapusher_settings.py
+MAX_CONTENT_LENGTH = 10485760 * 10 * 10 #supposedly this is 5 GB
+
+#in development.ini; put 400 MB
+ckan.max_resource_size = 400
+
+
+====================================================================================
+INSTALLING FileStore
+sudo mkdir -p /var/lib/ckan/default
+
+ckan.storage_path = /var/lib/ckan/default
+
+sudo chown eliagbayani /var/lib/ckan/default
+->based on my httpd.conf (apache config) my apache user is eliagbayani (not _www)
+
+sudo chgrp _www /var/lib/ckan/default
+-> just me
+
+sudo chmod u+rwx /var/lib/ckan/default
+
+sudo /usr/sbin/apachectl restart
+->restart apache
+
+TESTING FileStore
+
+worked OK: after which go to [DataStore] then click button "Upload to DataStore".
+curl -X POST http://127.0.0.1:5000/api/3/action/resource_create -H "Authorization: 0b5022e7-2497-4f7e-9541-c02e77c18318" --form upload=@/var/lib/ckan/default/taxon.tab --form package_id=d7a72876-f994-4bf3-9cf2-216c4fa41138 --form url="http://" --form name="elix"
+
+Note: upload=@ -> cannot use http://; should only be directory path not URL
+
+====================================================================================
+API usage: http://giv-oct.uni-muenster.de/dev-corner/data/storage/datastore-create/
+
+adding of records to an existing resource:
+curl -X POST http://127.0.0.1:5000/api/3/action/datastore_upsert -H "Authorization: 0b5022e7-2497-4f7e-9541-c02e77c18318" -d '{"resource_id": "62801a12-1077-4980-a414-5dbf1f7a5270", "method": "upsert", "records": [ {"sciname": "sciname5", "vernacular": "ver2"}, {"sciname": "sciname2", "vernacular": "ver3"} ],"force": "True", "method": "insert"}'
+
+
+More API usage for resource/dataset maintenance: https://gist.github.com/mheadd/a9bb37a51972cbff8ae0
+Config File Options: http://docs.ckan.org/en/ckan-2.2.3/configuration.html#storage-settings
+
+====================================================================================
+RUNNING Tests
+
+deactivate
+. /usr/lib/ckan/default/bin/activate
+cd /usr/lib/ckan/default/src/ckan
+nosetests --ckan --reset-db --with-pylons=test-core.ini ckan
+nosetests --ckan --with-pylons=test-core.ini ckan ckanext
+
+====================================================================================
+
+
+====================================================================================
+INSTALLING CKAN from source: Mac OS X Yosemite (ver. 10.10.5) {http://docs.ckan.org/en/latest/maintaining/installing/install-from-source.html}
+====================================================================================
+I. Install the required packages:
+sudo apt-get install python-dev postgresql libpq-dev python-pip python-virtualenv git-core solr-jetty openjdk-6-jdk
+
+*I used ‘brew’ instead of ‘apt-get’.
+
+sudo {brew} install 	python-dev 
+			postgresql 
+			libpq-dev 
+			python-pip 
+			python-virtualenv 
+			git-core 
+			solr-jetty 
+			openjdk-6-jdk
+
+————————————————————————————
+1. python-dev
+1.1. brew install python
+	python --version
+	which python
+1.2. brew linkapps python
+
+* when uploading zip file, I encounterd the need for libmagic.
+I encountered this error in DataPusher:
+ImportError: failed to find libmagic.  Check your installation
+
+Installing libmagic: http://www.brambraakman.com/blog/comments/installing_libmagic_in_mac_os_x_for_python-magic/
+$ brew install libmagic
+
+==> Pouring libmagic-5.28.yosemite.bottle.tar.gz
+/usr/local/Cellar/libmagic/5.28: 288 files, 5.3M
+
+————————————————————————————
+2. postgresql
+2.1. brew install postgresql
+Notes:
+To have launchd start postgresql now and restart at login:
+  brew services start postgresql
+Or, if you don't want/need a background service you can just run:
+  postgres -D /usr/local/var/postgres
+Restart postgres
+  brew services restart postgresql
+
+How to get the postgresql version:
+Server version:
+$ pg_config --version
+
+Client version:
+$ psql --version
+
+How to check if postgresql is running: 
+$ lsof -i:5432
+————————————————————————————
+3. libpq-dev
+3.1. brew install libpq-dev {X didn’t work, a possible solution here: http://stackoverflow.com/questions/10132274/install-libpq-dev-on-mac-os-x}
+
+*This seems to be installed already using "brew install postgresql" based here: http://superuser.com/questions/296873/install-libpq-dev-on-mac-os
+
+————————————————————————————
+4. python-pip
+4.1. brew install python-pip {X didn’t work.}
+
+alternative that works: ‘sudo easy_install pip’ based on: "http://stackoverflow.com/questions/17271319/installing-pip-on-mac-os-x"
+————————————————————————————
+5. python-virtualenv
+5.1. brew install python-virtualenv {X didn’t work.}
+
+alternative that works: ‘pip install virtualenv’ based on "http://www.marinamele.com/2014/05/install-python-virtualenv-virtualenvwrapper-mavericks.html"
+
+Install Xcode and Homebrew:
+1. $ xcode-select --install
+2. $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+3. add to ~/.bash_profile
+export PATH=/usr/local/bin:$PATH
+4. Install Python 2.7
+brew install python
+5. add to ~/.bash_profile 
+export PATH=/usr/local/share/python:$PATH
+6. Close and open your Terminal to apply these changes.
+7. To install virtualenv type in your terminal:
+$ pip install virtualenv
+
+…more pip and more virtualenv workflows, follow the page onwards: http://www.marinamele.com/2014/05/install-python-virtualenv-virtualenvwrapper-mavericks.html
+————————————————————————————
+6. git-core
+*I seem to have this already, so I just ignored it.
+————————————————————————————
+7. solr-jetty
+brew install solr-jetty {X didn’t work}
+
+alternative that works: https://github.com/ckan/ckan/wiki/How-to-Install-CKAN-1.7-on-OS-X-10.7-Lion
+..that is to install jetty and solr separately:
+
+7.1 $ brew install jetty
+
+[9.3.10.v20160621] - is the folder path created in [/usr/local/Cellar/jetty]
+
+/usr/local/Cellar/jetty/9.3.10.v20160621/libexec/bin/jetty.sh start
+/usr/local/Cellar/jetty/9.3.10.v20160621/libexec/bin/jetty.sh stop
+
+7.2 $ brew install solr
+
+To have launchd start solr now and restart at login		 : brew services start solr
+Or, if you don't want/need a background service you can just run : solr start
+
+————————————————————————————
+8. openjdk-6-jdk
+My Mac OS X seems to have Java already. Didn’t do anything here as far as CKAN.
+
+You can leverage the java_home helper binary on OS X for what you're looking for.
+To list all versions of installed JDK:	 
+$ /usr/libexec/java_home -V
+More here: http://stackoverflow.com/questions/14292698/how-to-check-if-java-jdk-installed-on-mac
+————————————————————————————
+
+====================================================================================
+II. Install CKAN into a Python virtual environment
+a. Create a Python virtual environment (virtualenv) to install CKAN into, and activate it:
+$ sudo mkdir -p /usr/lib/ckan/default
+$ sudo chown `whoami` /usr/lib/ckan/default
+$ virtualenv --no-site-packages /usr/lib/ckan/default
+$ . /usr/lib/ckan/default/bin/activate
+
+b. Install the CKAN source code into your virtualenv. To install the latest stable release of CKAN (CKAN 2.5.2), run:
+$ pip install -e 'git+https://github.com/ckan/ckan.git@ckan-2.5.2#egg=ckan'
+
+c. Install the Python modules that CKAN requires into your virtualenv:
+$ pip install -r /usr/lib/ckan/default/src/ckan/requirements.txt
+
+d. Deactivate and reactivate your virtualenv,…
+$ deactivate
+$ . /usr/lib/ckan/default/bin/activate
+
+====================================================================================
+III. Setup a PostgreSQL database
+
+List existing databases:
+
+$ sudo -u postgres psql -l
+-> didn’t work, ‘postgres’ here should be a user
+$ sudo -u eliagbayani psql -l
+-> works OK
+
+Create a new PostgreSQL database user called ckan_default:
+
+$ sudo -u eliagbayani createuser -S -D -R -P ckan_default
+Enter password for new role: eli
+Enter it again: eli
+-> woks OK
+
+Create a new PostgreSQL database, called ckan_default, owned by the database user you just created:
+$ sudo -u eliagbayani createdb -O ckan_default ckan_default -E utf-8
+-> works OK
+
+Config files:
+/usr/local/Cellar/postgresql/9.5.3/share/postgresql/postgresql.conf.sample
+/usr/local/Cellar/postgresql/9.5.3/share/postgresql/pg_hba.conf.sample
+
+====================================================================================
+IV. Create a CKAN config file
+
+Create a directory to contain the site’s config files:
+$ sudo mkdir -p /etc/ckan/default
+$ sudo chown -R eliagbayani /etc/ckan/
+$ sudo chown -R eliagbayani ~/ckan/etc
+
+Create the CKAN config file:
+$ paster make-config ckan /etc/ckan/default/development.ini
+
+Edit the development.ini file in a text editor, changing the following options:
+sqlalchemy.url
+site_id
+site_url
+====================================================================================
+V. Setup Solr
+
+——————————————— start — didn’t work for me
+1. Edit the Jetty configuration file (/etc/default/jetty) and change the following variables:
+
+On my Mac the conf file is in:
+/usr/local/Cellar/jetty/9.3.10.v20160621/libexec/etc/jetty.conf
+
+2. Replace the default schema.xml file with a symlink to the CKAN schema file included in the sources.
+
+sudo mv /usr/local/Cellar/solr/6.1.0/server/solr/conf/schema.xml /usr/local/Cellar/solr/6.1.0/server/solr/conf/schema.xml.bak
+sudo ln -s ~/ckan/lib/default/src/ckan/ckan/config/solr/schema.xml /usr/local/Cellar/solr/6.1.0/server/solr/conf/schema.xml
+
+*Solr 6.1.0 doesn’t have schema.xml. I just copied one from CKAN, then mv it to schema.xml.bak. Then symlink it.
+——————————————— end — didn’t work for me
+
+
+——————————————— start — almost worked but not quite…
+
+Another way of seeting up Solr: ONE THAT WORKS!
+
+mkdir /usr/local/Cellar/solr/6.1.0/server/solr/ckan1
+-> "ckan1" is an arbitrary name for the (single) solr-"core"
+
+touch /usr/local/Cellar/solr/6.1.0/server/solr/ckan1/core.properties
+
+cp -a /usr/local/Cellar/solr/6.1.0/server/solr/configsets/basic_configs/conf /usr/local/Cellar/solr/6.1.0/server/solr/ckan1
+
+#this mv seems not needed since there is no schema.xml in Solr 6.1.0
+mv /usr/local/Cellar/solr/6.1.0/server/solr/ckan1/conf/schema.xml /usr/local/Cellar/solr/6.1.0/server/solr/ckan1/conf/schema.xml.orig
+
+ln -s /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /usr/local/Cellar/solr/6.1.0/server/solr/ckan1/conf/schema.xml
+
+#this chown also not needed on my Mac
+chown -R solr:solr /var/solr
+
+# restart solr
+service solr restart
+
+3. Edit CKAN development.ini
+
+solr_url = http://localhost:8983/solr/ckan1
+——————————————— end — almost worked but not quite…
+
+
+——————————————— start — Finally one that actually works!!!
+5.1 That is installing Solr 4.10.4 using MacPorts:
+$ sudo port install apache-solr4
+Warning: The Xcode Command Line Tools don't appear to be installed; most ports will likely fail to build.
+Warning: Install them by running `xcode-select --install'.
+--->  Fetching archive for apache-solr4
+--->  Attempting to fetch apache-solr4-4.10.4_0.darwin_14.noarch.tbz2 from https://packages.macports.org/apache-solr4
+      [                                        ]   6.7 %        speed: 48.8 KiB/s   
+--->  Attempting to fetch apache-solr4-4.10.4_0.darwin_14.noarch.tbz2 from http://sea.us.packages.macports.org/macports/packages/apache-solr4
+--->  Attempting to fetch apache-solr4-4.10.4_0.darwin_14.noarch.tbz2.rmd160 from http://sea.us.packages.macports.org/macports/packages/apache-solr4
+--->  Installing apache-solr4 @4.10.4_0
+--->  Activating apache-solr4 @4.10.4_0
+To try apache-solr4, run 'sudo solr4' and open http://localhost:8983/solr/collection1/browse.
+To store sample documents, run 'cd /opt/local/share/java/solr-4.10.4/example/exampledocs && ./post.sh *.xml'.
+--->  Cleaning apache-solr4
+--->  Updating database of binaries
+
+5.2 Do the symplink:
+mv /opt/local/share/java/solr-4.10.4/example/solr/collection1/conf/schema.xml /opt/local/share/java/solr-4.10.4/example/solr/collection1/conf/schema.xml.orig
+ln -s /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /opt/local/share/java/solr-4.10.4/example/solr/collection1/conf/schema.xml
+
+5.3 Edit CKAN development.ini
+solr_url = http://localhost:8983/solr
+——————————————— end — Finally one that actually works!!!
+
+====================================================================================
+VI. Create database tables
+
+Now that you have a configuration file that has the correct settings for your database, you can create the database tables:
+
+cd /usr/lib/ckan/default/src/ckan
+paster db init -c /etc/ckan/default/development.ini
+
+
+To fix problem of missing sanitizer from html5lib. From backtrace: "ImportError: No module named sanitizer"
+#be sure it has only seven 9’s
+$ pip install html5lib==0.9999999
+====================================================================================
+VII. Set up the DataStore
+
+1. Enable the plugin. Edit CKAN config file (development.ini)
+ckan.plugins = datastore
+
+2. Set-up the database
+
+a. Create users and databases
+
+a.1 Create a ckan_default user
+$ sudo -u eliagbayani createuser -S -D -R -P ckan_default
+$ sudo -u eliagbayani createuser -S -D -R -P -l ckan_default
+
+a.2 Create a database_user called datastore_default.
+sudo -u eliagbayani createuser -S -D -R -P -l datastore_default
+Enter password for new role: eli
+Enter it again: eli
+
+a.3 Create the database (owned by ckan_default), which we’ll call datastore_default:
+sudo -u eliagbayani createdb -O ckan_default datastore_default -E utf-8
+
+b. Set URLs
+
+b.1 Edit config file: development.ini
+ckan.datastore.write_url = postgresql://ckan_default:eli@localhost/datastore_default
+ckan.datastore.read_url = postgresql://datastore_default:eli@localhost/datastore_default
+
+c. Set permissions
+I did a couple of work-arounds here:
+
+c.1 Make eliagbayani as postgres superuser:
+Open psql console:
+$ psql -h localhost -p 5432 -U eliagbayani postgres
+
+Make user a superuser: Login to console then run:
+# ALTER USER eliagbayani WITH SUPERUSER;
+
+Exit from psql
+# \q
+
+c.2 Paste the result of this command:
+$ paster --plugin=ckan datastore set-permissions -c /etc/ckan/default/development.ini
+… to psql console where a superuser is logged-in.
+
+====================================================================================
+VIII. Link to who.ini
+
+ln -s /usr/lib/ckan/default/src/ckan/who.ini /etc/ckan/default/who.ini
+
+====================================================================================
+IX. You’re done!
+
+cd /usr/lib/ckan/default/src/ckan
+paster serve /etc/ckan/default/development.ini
+
+====================================================================================
+
+
+
+
+Testing CKAN
+
+Back-end tests
+
+Install additional dependencies
+$ . /usr/lib/ckan/default/bin/activate
+$ pip install -r /usr/lib/ckan/default/src/ckan/dev-requirements.txt
+
+Set up the test databases
+sudo -u eliagbayani createdb -O ckan_default ckan_test -E utf-8
+sudo -u eliagbayani createdb -O ckan_default datastore_test -E utf-8
+paster datastore set-permissions -c test-core.ini | sudo -u postgres psql
