@@ -105,6 +105,7 @@ class eoearth_redirect_controller
     {
         $temp = "http://" . "www.eoearth.org" . $_SERVER['REQUEST_URI'];
         $temp = str_replace("eoearth_redirect_sys/", "", $temp);
+        $temp = str_ireplace("www.eoearth.org//", "www.eoearth.org/", $temp);
         return $temp;
         
         
