@@ -19,10 +19,11 @@ $old_url = self::create_old_url();
         <td>This is now the new URL</td>
         <td>: <a href="<?php echo $url ?>"><?php echo $url ?></a></td>
     </tr>
-    <tr><td colspan="2">Please use this new URL as outlink in your website instead. You can click on it now to proceed.</td></tr>
+    <tr><td colspan="2">Please use this new URL as outlink in your website instead.</td></tr>
     <tr><td colspan="2">
     <b>You will be redirected to the new URL in <span id="counter">30</span> seconds.</b>
     </td></tr>
+    <tr><td colspan="2">Or you can click now on the new URL to proceed.</td></tr>
 </table>
 
 <?php
