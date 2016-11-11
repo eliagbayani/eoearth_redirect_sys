@@ -5,6 +5,7 @@ function countdown()
     if (parseInt(i.innerHTML)<=1) 
     {
         location.href = '<?php echo $url ?>';
+        throw new Error("Loading, please wait...");
     }
     else
     {
