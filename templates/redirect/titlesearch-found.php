@@ -21,7 +21,7 @@ $old_url = self::create_old_url();
     </tr>
     <tr><td colspan="2">Please use this new URL as outlink in your website instead.</td></tr>
     <tr><td colspan="2">
-    <b>You will be redirected to the new URL in <span id="counter">15</span> seconds.</b>
+    <b>You will be redirected to the new URL in <span id="counter">5</span> seconds.</b>
     </td></tr>
     <tr><td colspan="2">Or you can click now on the new URL to proceed.</td></tr>
 </table>
