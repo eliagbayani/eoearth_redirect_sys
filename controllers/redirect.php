@@ -128,6 +128,21 @@ class eoearth_redirect_controller
         ob_end_clean();
         return $contents;
     }
+    
+    function redirect_for_php($url)
+    {
+        /*
+        ob_start();
+        header('Location: '.$url);
+        ob_end_flush();
+        die();
+        */
+        /*
+        header('Status: 301 Moved Permanently', false, 301);
+        header('Location: '.$url);
+        exit();
+        */
+    }
 
 }
 ?>
