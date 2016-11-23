@@ -1,0 +1,14 @@
+
+~/FreshData/c18node15/mesos-0.23.1/build: ./bin/mesos-master.sh --zk=zk://127.0.0.1:2181/mesos --port=5050 --log_dir=/var/log/mesos --ip=127.0.0.1 --quorum=1 --work_dir=/var/lib/mesos
+
+~/FreshData/c18node15/mesos-0.23.1/build: 
+./bin/mesos-slave.sh --master=zk://127.0.0.1:2181/mesos --log_dir=/var/log/mesos --resources=cpus:1;mem:10000 --work_dir=/var/data/tmp-mesos
+./bin/mesos-slave.sh --master=zk://127.0.0.1:2181/mesos --log_dir=/var/log/mesos --resources=cpus:1;mem:10000 --work_dir=/Users/eliagbayani/FreshData/c18node15/data/tmp-mesos
+
+~/Downloads/zookeeper-3.4.9: bin/zkServer.sh start
+
+~/Downloads/marathon-1.1.1:                             ./bin/start --master zk://127.0.0.1:2181/mesos --zk zk://127.0.0.1:2181/marathon --http_port 8082 --http_address localhost
+MESOS_NATIVE_JAVA_LIBRARY=/usr/local/lib/libmesos.dylib ./bin/start --master zk://127.0.0.1:2181/mesos --zk zk://127.0.0.1:2181/marathon --http_port 8082 --http_address localhost
+
+
+cassandra -f

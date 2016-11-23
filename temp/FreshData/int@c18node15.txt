@@ -1,0 +1,389 @@
+eliagbayani@ELIs-Mac-mini ~/.ssh: ssh freshdata1
+Welcome to Ubuntu 12.04.3 LTS (GNU/Linux 3.13.0-74-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+New release '14.04.1 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+Last login: Mon Oct 31 11:38:53 2016 from 203.87.133.152
+int@c18node15:~$ ls
+
+apache-cassandra-2.1.15             effechecka          kafka_2.11-0.9.0.0.tgz                 nohup.out                  spark-1.6.0-bin-hadoop2.6.tgz
+apache-cassandra-2.1.15-bin.tar.gz  hadoop-2.7.2        mesos_0.23.0-1.0.ubuntu1204_amd64.deb  scripts                    stderr
+backup                              idigbio-spark       mesos-0.23.1                           set-env.sh                 stdout
+data                                jobs                mesos-0.23.1.tar.gz                    setup.sh                   target
+derby.log                           kafka_2.11-0.9.0.0  metastore_db                           spark-1.6.0-bin-hadoop2.6  test
+
+============================================== end ssh access
+
+all tgz installers so far:
+kafka_2.11-0.9.0.0.tgz
+spark-1.6.0-bin-hadoop2.6.tgz
+apache-cassandra-2.1.15-bin.tar.gz
+mesos-0.23.1.tar.gz
+
+scp freshdata1:~/mesos-0.23.1.tar.gz                  ~/FreshData/c18node15/
+scp freshdata1:~/apache-cassandra-2.1.15-bin.tar.gz   ~/FreshData/c18node15/
+scp freshdata1:~/spark-1.6.0-bin-hadoop2.6.tgz        ~/FreshData/c18node15/
+scp freshdata1:~/kafka_2.11-0.9.0.0.tgz               ~/FreshData/c18node15/
+
+scp freshdata1:~/set-env.sh                               ~/FreshData/c18node15/
+scp freshdata1:~/setup.sh                                 ~/FreshData/c18node15/
+scp freshdata1:~/mesos_0.23.0-1.0.ubuntu1204_amd64.deb    ~/FreshData/c18node15/ --- was removed by Jorrit, wasn't able to copy
+
+
+Proved better when copying an entire folder:
+scp -r freshdata1:~/apache-cassandra-2.1.15/conf   ~/FreshData/c18node15/z_eli/cassandra_conf/
+scp -r freshdata1:~/spark-1.6.0-bin-hadoop2.6/conf ~/FreshData/c18node15/z_eli/spark_hadoop_conf/
+scp -r freshdata1:~/kafka_2.11-0.9.0.0/config      ~/FreshData/c18node15/z_eli/kafka_config/
+
+scp -r freshdata1:~/hadoop-2.7.2/etc              ~/FreshData/c18node15/z_eli/hadoop/etc/
+scp -r freshdata1:~/hadoop-2.7.2/include          ~/FreshData/c18node15/z_eli/hadoop/include/
+scp -r freshdata1:~/hadoop-2.7.2/libexec          ~/FreshData/c18node15/z_eli/hadoop/libexec/
+scp -r freshdata1:~/hadoop-2.7.2/sbin             ~/FreshData/c18node15/z_eli/hadoop/sbin/
+
+----------------
+git remote add origin https://github.com/eliagbayani/cassandra_conf.git
+git remote add origin https://github.com/eliagbayani/spark_hadoop_conf.git
+git remote add origin https://github.com/eliagbayani/kafka_config.git
+
+git init
+git add .
+git commit -m "first commit"
+git remote add origin https://github.com/eliagbayani/hadoop_files.git
+git push -u origin master
+----------------
+
+scp -r freshdata1:~/effechecka    ~/FreshData/c18node15/effechecka_from_remote/
+scp -r freshdata1:~/target        ~/FreshData/c18node15/target/
+scp -r freshdata1:~/metastore_db  ~/FreshData/c18node15/metastore_db/
+scp -r freshdata1:~/scripts       ~/FreshData/c18node15/scripts/
+scp -r freshdata1:~/hadoop-2.7.2  ~/FreshData/c18node15/hadoop-2.7.2/
+
+
+scp -r freshdata1:~/mesos-0.23.1   ~/FreshData/c18node15/mesos-0.23.1_copied/
+
+scp -r freshdata1:~/idigbio-spark  ~/FreshData/c18node15/idigbio-spark_copied/                  didn't finish
+scp freshdata1:~/idigbio-spark/*.*  ~/FreshData/c18node15/idigbio-spark_copied/                 OK
+scp -r freshdata1:~/idigbio-spark/src  ~/FreshData/c18node15/idigbio-spark_copied/              OK
+scp -r freshdata1:~/idigbio-spark/target  ~/FreshData/c18node15/idigbio-spark_copied/           on-going...
+scp -r freshdata1:~/idigbio-spark/project  ~/FreshData/c18node15/idigbio-spark_copied/          next
+
+
+/home/int/jobs/iDigBio-LD-assembly-1.5.5.jar
+
+scp -r freshdata1:/home/int/jobs/iDigBio-LD-assembly-1.5.5.jar  ~/FreshData/z_remote_jars/
+
+scp -r freshdata1:/home/int/data/idigbio  ~/FreshData/c18node15/data/idigbio/
+
+scp -r freshdata1:/home/int/data/inaturalist  ~/FreshData/c18node15/data/inaturalist
+
+
+scp -r freshdata1:/home/int/data/gbif-idigbio.parquet/source=inaturalist  ~/FreshData/c18node15/data/gbif-idigbio.parquet/source=inaturalist
+->completed
+scp -r freshdata1:/home/int/data/gbif-idigbio.parquet/source=idigbio  ~/FreshData/c18node15/data/gbif-idigbio.parquet/source=idigbio
+scp -r freshdata1:/home/int/data/gbif-idigbio.parquet/source=gbif  ~/FreshData/c18node15/data/gbif-idigbio.parquet/source=gbif
+
+===============================================================================
+
+$ git clone https://github.com/eliagbayani/effechecka.git
+$ cd effechecka
+$ git remote add upstream3 https://github.com/jhpoelen/effechecka.git
+
+needed to copy /effechecka/ since there are changes in remote server (c18node15) that is not committed:
+scp -r freshdata1:~/effechecka  ~/FreshData/c18node15/effechecka_copied/
+
+
+$ git clone https://github.com/eliagbayani/idigbio-spark.git
+$ cd idigbio-spark
+$ git remote add upstream3 https://github.com/bio-guoda/idigbio-spark.git
+
+
+others: 
+http://sockslist.net/articles/socks-firefox-how-to
+
+===============================================================================
+1. configure socks for browser:
+Advanced - Network - Settings...
+SOCKS Host: localhost
+port: 8080
+SOCKS v5
+No proxy for: 127.0.0.1
+2. in command line:
+$ ssh -D 8080 freshdata1
+3. UI's now accessible via browser:
+Jenkins http://localhost:8080/
+Marathon http://localhost:8082/
+Mesos http://localhost:5050/
+
+===============================================================================
+Hi Jorrit, you mentioned these:
+1. kafka started through marathons (see marathon ui)
+2. spark mesos dispatcher started through on marathon (see marathon ui)
+3. effechecka/freshdata api started through marathon by cloning git (see marathon ui)
+4. mesos started as system service (both master and worker)
+5. cassandra started as system service (not started through marathon b/c it needs a persistent volume)
+6. nginx started as system service (nginx proxies localhost ports when applicable)
+
+"ps -ef | grep (marathon|mesos)"
+-> check for running apps
+
+nmap -p 8888 localhost
+sudo lsof -i -P | grep -i "8888"
+sudo lsof -i :8888
+-> check for port 8888
+sudo lsof -i -P | grep -i "listen"
+-> all ports
+
+
+===============================================================================
+/effechecka-api
+cd effechecka-master && chmod u+x run.sh && ./run.sh
+Eli's version
+
+cd /Users/eliagbayani/FreshData/another_server/effechecka-master && chmod u+x run_mac.sh && ./run_mac.sh
+
+cd /Users/eliagbayani/FreshData/another_server/
+
+path: /Users/eliagbayani/FreshData/another_server
+
+CPUs = 0.1 
+Health Checks
+    [
+      {
+        "path": "/checklist?limit=20&taxonSelector=Aves%2CInsecta&traitSelector=&wktString=ENVELOPE(-72.147216796875%2C-69.949951171875%2C43.11702412135048%2C41.49212083968776)&",
+        "protocol": "HTTP",
+        "gracePeriodSeconds": 300,
+        "intervalSeconds": 60,
+        "timeoutSeconds": 20,
+        "maxConsecutiveFailures": 3,
+        "ignoreHttp1xx": false,
+        "port": 8888
+      }
+    ]
+Instances = 1 
+Memory = 2048 MiB
+Disk Space = 0 MiB
+Ports = 10000
+Backoff Factor = 1.15 
+Backoff = 1 seconds
+Max Launch Delay = 3600 seconds
+URIs = https://github.com/jhpoelen/effechecka/archive/master.zip
+http://localhost/downloads/effechecka-master.zip
+
+Version = 2016-10-31T18:39:28.780Z
+------------------------------------------------
+/effechecka-notifier
+cd effechecka-master && chmod u+x runNotifier.sh && ./runNotifier.sh key-f0548cf631071308283bd7b9b2a9f0e1
+
+path: /Users/eliagbayani/FreshData/another_server
+
+cd /Users/eliagbayani/FreshData/another_server/effechecka-master && chmod u+x runNotifier.sh && ./runNotifier.sh key-f0548cf631071308283bd7b9b2a9f0e1
+
+CPUs = 0.1 
+Instances = 1 
+Memory = 2048 MiB
+Disk Space = 0 MiB
+Ports = 10004
+Backoff Factor = 1.15 
+Backoff = 1 seconds
+Max Launch Delay = 3600 seconds
+URIs = https://github.com/jhpoelen/effechecka/archive/master.zip
+http://localhost/downloads/effechecka-master.zip
+
+Version = 2016-09-20T03:48:24.086Z
+------------------------------------------------
+/kafka
+cd                                        kafka_2.11-0.9.0.0 && ./bin/kafka-server-start.sh ./config/server.properties --override host.name=localhost
+cd /Users/eliagbayani/FreshData/c18node15/kafka_2.11-0.9.0.0 && ./bin/kafka-server-start.sh ./config/server.properties --override host.name=localhost
+
+path: /Users/eliagbayani/FreshData/c18node15
+
+
+CPUs = 0.5 
+Instances = 1 
+Memory = 512 MiB
+Disk Space = 0 MiB
+Ports = 10003
+Backoff Factor = 1.15 
+Backoff = 1 seconds
+Max Launch Delay = 3600 seconds
+URIs = http://mirror.cogentco.com/pub/apache/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgz
+http://localhost/downloads/kafka_2.11-0.9.0.0.tgz
+
+Version = 2016-04-22T22:36:01.827Z
+------------------------------------------------
+
+/spark-mesos-cluster-dispatcher
+cd spark-2.0.1-bin-hadoop2.7 && chmod u+x bin/spark-class && bin/spark-class org.apache.spark.deploy.mesos.MesosClusterDispatcher --master mesos://127.0.0.1:5050
+
+Eli's version:
+cd spark-2.0.1-bin-hadoop2.7 && chmod u+x bin/spark-class && MESOS_NATIVE_JAVA_LIBRARY=/usr/local/lib/libmesos.dylib bin/spark-class org.apache.spark.deploy.mesos.MesosClusterDispatcher --master mesos://127.0.0.1:5050
+
+
+path: /Users/eliagbayani/FreshData/another_server
+
+CPUs = 1
+Health Checks
+    [
+      {
+        "path": "/",
+        "protocol": "HTTP",
+        "gracePeriodSeconds": 300,
+        "intervalSeconds": 60,
+        "timeoutSeconds": 20,
+        "maxConsecutiveFailures": 3,
+        "ignoreHttp1xx": false,
+        "port": 8081
+      }
+    ]
+Instances = 1
+Memory = 1024 MiB
+Disk Space = 0 MiB
+Ports = 10001
+Backoff Factor = 1.15 
+Backoff = 1 seconds
+Max Launch Delay = 3600 seconds
+URIs = http://d3kbcqa49mib13.cloudfront.net/spark-2.0.1-bin-hadoop2.7.tgz
+http://localhost/downloads/spark-2.0.1-bin-hadoop2.7.tgz
+
+User = Unspecified
+Version = 2016-10-25T18:39:29.674Z
+------------------------------------------------
+Hi Jorrit,
+A quick clarification please.
+
+In your Marathon UI (localhost:8082), in some applications, in the Command entry, the app cd to folders like:
+- /effechecka-master/
+- /spark-2.0.1-bin-hadoop2.7/
+
+I assume these are the apps that bootstrap themselves from a specific resources (e.g. some zip or tar ball),
+since they are not found in the server int@c18node15.
+
+But found elsewhere respectively:
+https://github.com/jhpoelen/effechecka/archive/master.zip
+http://d3kbcqa49mib13.cloudfront.net/spark-2.0.1-bin-hadoop2.7.tgz
+
+*More questions to follow, hope you don't mind. It is only now that I started again to work on FreshData as we've been busy with another task.
+
+Thanks Jorrit.
+
+nohup.out
+stderr
+stdout
+data
+derby.log
+test
+
+####################################################################################################################
+####################################################################################################################
+RUNNING MESOS:
+~/FreshData/c18node15/mesos-0.23.1
+*[mesos-0.23.1] entire folder was copied from remote and not extracted from .tgz copy
+
+For this version: mesos-0.23.1, I need to build mesos and probably test (steps from http://mesos.apache.org/gettingstarted/)
+$ cd mesos
+-> cd ~/FreshData/c18node15/mesos-0.23.1
+$ ./bootstrap
+$ mkdir build
+$ cd build
+$ ../configure
+$ make
+# Run test suite.
+$ make check
+# Install (Optional).
+$ make install
+
+To run Mesos:
+$ cd build
+$ ./bin/mesos-master.sh --ip=127.0.0.1 --work_dir=/var/lib/mesos
+$ ./bin/mesos-agent.sh --master=127.0.0.1:5050 --work_dir=/var/lib/mesos
+-> no agent yet in mesos-0.23.1
+
+# Visit the mesos web page.
+$ http://127.0.0.1:5050
+
+####################################################################################################################
+####################################################################################################################
+
+========================================================================= https://help.github.com/articles/fork-a-repo/
+Steps to Fork: easy two-steps, after logging in to GitHub.
+1. On GitHub, navigate to the ‘desired’ repository to fork. e.g. https://github.com/jhpoelen/effechecka
+2. In the top-right corner of the page, click Fork.
+
+STEPS: clone
+git clone https://github.com/eliagbayani/effechecka.git
+cd to effechecka
+git remote -v {You'll see the current configured remote repository for your fork.}
+git remote add upstream3 https://github.com/jhpoelen/effechecka.git
+git remote -v {should see 2 origin and 2 upstream}
+========================================================================= https://help.github.com/articles/syncing-a-fork/
+steps to update my fork from main:
+git fetch upstream3
+git merge upstream3/master
+- {then 'git push' to clear the red dot in Gitbox}
+===============================================================================
+
+####################################################################################################################
+####################################################################################################################
+https://gauravsohoni.wordpress.com/2015/04/14/mac-osx-open-port/
+nmap -p 1234 localhost
+
+This will output the status ..
+
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00013s latency).
+PORT STATE SERVICE
+1234/tcp closed ppp
+
+To open this port, add the following line in /etc/pf.conf
+
+sudo vim /etc/pf.conf
+
+# Open port 1234 for TCP on all interfaces
+pass in proto tcp from any to any port 1234
+# You can limit the ip addresses .. replace any with allowed addresses ..
+
+Save the file.
+####################################################################################################################
+####################################################################################################################
+http://serverfault.com/questions/102416/iptables-equivalent-for-mac-os-x/673551#673551
+
+I was able to get this working using the ifconfig and pfctl commands on Mac 10.10.2. With the following approach I'm successfully mapping 127.0.0.1:3000 to mydomain.com locally on my machine.
+
+In your command line enter the following two commands to forward connections to 127.0.0.1:3000 to 10.0.0.1:
+
+sudo ifconfig lo0 10.0.0.1 alias
+echo "rdr pass on lo0 inet proto tcp from any to 10.0.0.1 port 80 -> 127.0.0.1 port 3000" | sudo pfctl -ef -
+
+Then edit your /etc/hosts or /private/etc/hosts file and add the following line to map your domain to 10.0.0.1.
+
+10.0.0.1 mydomain.com
+
+After you save your hosts file flush your local DNS:
+
+sudo discoveryutil udnsflushcaches
+
+Now open mydomain.com in a browser and you'll be seeing the server hosted on your localhost port (i.e. 127.0.0.1:3000). 
+Basically this process maps an <ip>:<port> to a new <ip> so that you can then map a host that IP.
+
+ACTUAL STEPS:
+sudo ifconfig lo0 10.0.0.1 alias
+echo "rdr pass on lo0 inet proto tcp from any to 10.0.0.1 port 80 -> 127.0.0.1 port 8888" | sudo pfctl -ef -
+
+Then edit your /etc/hosts or /private/etc/hosts file and add the following line to map your domain to 10.0.0.1.
+
+10.0.0.1 api.effechecka.org
+
+####################################################################################################################
+####################################################################################################################
+
+http://learnaholic.me/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/
+
+####################################################################################################################
+####################################################################################################################
+
+
+
+
+

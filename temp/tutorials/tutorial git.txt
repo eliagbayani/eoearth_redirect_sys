@@ -1,0 +1,286 @@
+
+How to create a repo locally and then link to a repo in Github:
+mkdir EliA_Project
+cd EliA_Project
+git init
+touch ReadMe.txt
+git status
+git add ReadMe.txt
+git commit -m “Add ReadMe.txt”
+
+Connect Your Local Repository To Your GitHub Repository:
+sudo git remote add origin https://github.com/eliagbayani/Eli_Project.git
+sudo git remote add origin https://github.com/eliagbayani/eli-jekyll-site.git
+
+git remote -v
+
+
+echo "# Eli_Project" >> README.md
+sudo git init
+sudo git add README.md
+sudo git commit -m "first commit"
+sudo git remote add origin https://github.com/eliagbayani/Eli_Project.git
+sudo git push -u origin master
+
+Steps for a complete cycle when editing file:
+1. edit the file ReadMe.txt
+2. in Gitbox, for file ReadMe.txt check checkbox [modified] OR in command-line enter: git add ReadMe.txt
+3. git commit -m "file edited…”
+4. git push {to finalize and remove the red dot in Gitbox}
+
+Steps on how to update my local repo:
+git fetch origin
+git merge origin/master
+
+=====================================================================
+=====================================================================
+Create a repo with existing files/project: (working well…)
+e.g. The MediaWiki /LiteratureEditor/
+
+cd LiteratureEditor
+1. git init
+2. git add .
+3. git remote add origin https://github.com/eliagbayani/LiteratureEditor.git
+4. git commit -m ‘Initial bulk commit’
+5. git push -u origin master
+
+How to create a local repo to link to a repo in github:
+1. mkdir LiteratureEditor
+2. cd LiteratureEditor
+3. git init
+4. git remote add origin https://github.com/eliagbayani/LiteratureEditor.git
+5. git fetch origin
+6. git merge origin/master
+
+How to create a local repo to link to a repo in github:
+sudo mkdir eol_php_code
+sudo cd eol_php_code
+sudo git init
+sudo git remote add origin https://github.com/eliagbayani/eol_php_code.git
+sudo git fetch origin
+sudo git merge origin/master
+
+
+=====================================================================
+=====================================================================
+=====================================================================
+=====================================================================
+=====================================================================
+=====================================================================
+
+OTHERS:
+—————————
+https://help.github.com/articles/fork-a-repo
+sites/eli/eol_php_code ---> my fork of the eol_php_code base
+------------------------------------------------------------------------------------
+
+git remote add upstream https://github.com/eliagbayani/EliA_Project.git
+git fetch upstream
+git merge upstream/master
+
+=========================================================================
+https://help.github.com/articles/fork-a-repo/
+
+I. Steps to Fork: easy two-steps, after logging in to GitHub.
+1. On GitHub, navigate to the ‘desired’ repository to fork.
+2. In the top-right corner of the page, click Fork.
+
+II. STEPS: to clone, setup
+git clone https://github.com/eliagbayani/eol_php_code.git
+cd to eol_php_code
+git remote -v {You'll see the current configured remote repository for your fork.}
+git remote add upstream3 https://github.com/EOL/eol_php_code.git
+git remote -v {should see 2 origin and 2 upstream}
+
+https://help.github.com/articles/syncing-a-fork/
+=========================================================================
+steps to update my fork from main eol_php_code:
+- git remote add upstream3 https://github.com/EOL/eol_php_code.git
+git fetch upstream3
+git merge upstream3/master
+- {then 'git push' to clear the red dot in Gitbox}
+==========================================================
+
+HOW TO MANAGE GIT BRANCH: from here: http://stackoverflow.com/questions/2294313/how-to-download-a-branch-with-git
+
+For any Git newbies like me, here are some steps you could follow to download a remote repository, and then switch to the branch that you want to view. They probably abuse Git in some way, but it did the job for me! :-)
+
+Clone the repository you want to download the code for (in this example I've picked the LRResty project on Github):
+
+$ git clone https://github.com/lukeredpath/LRResty.git
+$ cd LRResty
+
+Check what branch you are using at this point (it should be the master branch):
+
+$ git branch    
+* master
+
+Check out the branch you want, in my case it is called 'arcified':
+
+ $ git checkout -b arcified origin/arcified
+ Branch arcified set up to track remote branch arcified from origin.
+ Switched to a new branch 'arcified'
+
+Confirm you are now using the branch you wanted:
+
+$ git branch    
+* arcified
+  master
+
+If you want to update the code again later, run git pull:
+
+$ git pull
+Already up-to-date.
+
+==========================================================
+to switch from master to branch and vice versa:
+
+git checkout [local-branch-name]
+git checkout master
+
+==========================================================Reef Life Survey - START
+*** works OK after one hour ???
+
+How to create a local repo to link to a repo in github: e.g. Reef Life Survey 
+1. mkdir source-reeflifesurvey
+2. cd source-reeflifesurvey
+3. git init
+4. git remote add origin https://github.com/gimmefreshdata/source-reeflifesurvey.git
+5. git fetch origin
+6. git merge origin/master
+
+to update:
+git fetch origin
+git merge origin/master
+
+==========================================================Reef Life Survey - END
+
+
+
+========================================================================= freshdata
+fork a copy of gimmefreshdata.github.io.git then build jekyll so you can run portal locally: localhost:4000
+
+STEPS TO FORK:
+git clone https://github.com/eliagbayani/gimmefreshdata.github.io.git
+cd to gimmefreshdata.github.io
+git remote -v {You'll see the current configured remote repository for your fork.}
+git remote add upstream https://github.com/gimmefreshdata/gimmefreshdata.github.io.git
+git remote -v {should see 2 origin and 2 upstream}
+
+STEPS TO SYNC:
+https://help.github.com/articles/syncing-a-fork/
+steps to update my fork from main:
+- git remote add upstream https://github.com/gimmefreshdata/gimmefreshdata.github.io.git
+git fetch upstream
+git merge upstream/master
+- {then 'git push' to clear the red dot in Gitbox}
+
+STEPS to build jekyll:
+$brew install ruby | exit terminal | open terminal again
+$ ruby —-version
+$ jekyll build
+->this will put in the jekyll files, added files/folders here are gitignored by Jorrit already
+$ jekyll server --incremental --watch
+open browser: localhost:4000
+-> at this point no file/folder is updated in Gitbox, that is expected since the entries in .gitignore
+
+========================================================================= freshdata
+
+========================================================================= fork github-php-client
+STEPS TO FORK:
+git clone https://github.com/eliagbayani/github-php-client.git
+cd to github-php-client
+git remote -v {You'll see the current configured remote repository for your fork.}
+git remote add upstream https://github.com/tan-tan-kanarek/github-php-client.git
+git remote -v {should see 2 origin and 2 upstream}
+
+STEPS TO SYNC:
+https://help.github.com/articles/syncing-a-fork/
+steps to update my fork from main:
+- git remote add upstream https://github.com/tan-tan-kanarek/github-php-client.git
+git fetch upstream
+git merge upstream/master
+- {then 'git push' to clear the red dot in Gitbox}
+
+========================================================================= fork github-php-client
+
+
+
+=================FreshData
+step 1: Created a repository in GitHub
+step 2:cd to /Library/WebServer/Documents/FreshData:
+
+echo "# FreshData" >> README.md
+git init
+git add .
+git commit -m “initial bulk“
+git remote add origin https://github.com/eliagbayani/FreshData.git
+git push -u origin master
+=================FreshData
+
+
+Loading FreshData in Archive server:
+How to create a local repo to link an existing repo in github:
+1. sudo mkdir FreshData
+2. cd FreshData
+3. sudo git init
+4. sudo git remote add origin https://github.com/eliagbayani/FreshData.git
+5. sudo git fetch origin
+6. sudo git merge origin/master
+
+
+Loading github-php-client in Archive server:
+How to create a local repo to link an existing repo in github:
+1. sudo mkdir github-php-client
+2. cd github-php-client
+3. sudo git init
+4. sudo git remote add origin https://github.com/eliagbayani/github-php-client.git
+5. sudo git fetch origin
+6. sudo git merge origin/master
+
+
+========================
+http://www.norbauer.com/rails-consulting/notes/git-revert-reset-a-single-file.html
+
+git: revert (reset) a single file
+
+By Jonathan Dance — 08 April 2008
+
+This one is hard to find out there so here it is. If you have an uncommitted change (its only in your working copy) that you wish to revert (in SVN terms) to the copy in your latest commit, do the following:
+
+git checkout filename
+
+This will checkout the file from HEAD, overwriting your change. This command is also used to checkout branches, and you could happen to have a file with the same name as a branch. All is not lost, you will simply need to type:
+
+git checkout -- filename
+
+You can also do this with files from other branches, and such. man git-checkout has the details.
+
+The rest of the Internet will tell you to use git reset --hard, but this resets all uncommitted changes you’ve made in your working copy. Type this with care.
+========================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

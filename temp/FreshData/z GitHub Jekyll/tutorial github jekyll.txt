@@ -1,0 +1,39 @@
+https://eol-jira.bibalex.org/browse/DATA-1622
+
+- Setting up your GitHub Pages site locally with Jekyll
+https://help.github.com/articles/setting-up-your-github-pages-site-locally-with-jekyll/
+
+Requirements:
+$ brew install ruby
+close terminal, open new terminal, 
+$ ruby —-version
+-> ruby 2.3.1p112 (2016-04-26 revision 54768) [x86_64-darwin14]
+$ gem install bundler
+
+Step 1: Create a local repository for your Jekyll site
+git init eli-jekyll-site
+cd eli-jekyll-site
+
+Step 2: Install Jekyll using Bundler
+Add to Gemfile these two lines:
+source 'https://rubygems.org'
+gem 'github-pages', group: :jekyll_plugins
+
+Step 3 (optional): Generate Jekyll site files
+bundle exec jekyll new . --force
+then edit Gemfile:
+- comment this line: "jekyll", "3.2.1"
+- uncomment this line: gem "github-pages", group :jekyll_plugins
+
+——————commit
+git add .
+git commit -m ‘initial commit’
+Connect Your Local Repository To Your GitHub Repository:
+sudo git remote add origin https://github.com/eliagbayani/eli-jekyll-site.git
+git remote -v
+sudo git push -u origin master
+————
+
+Step 4: Build your local Jekyll site
+Run your Jekyll site locally:
+$ bundle exec jekyll serve --incremental

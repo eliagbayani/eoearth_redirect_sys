@@ -1,0 +1,362 @@
+Good Java tutorials: http://www.allprogrammingtutorials.com/java-basics/
+######################################
+Apache Spark
+######################################
+installed in: [~/Downloads/spark-2.0.1-bin-hadoop2.7/]
+
+http://spark.apache.org/downloads.html
+As of the time, I used the default download:
+
+- Download Spark: spark-2.0.1-bin-hadoop2.7.tgz
+- then: $ brew install sbt
+
+1. Open README.md. Follow some instructions to check if spark is working ok
+2. Follow instructions here:
+http://spark.apache.org/docs/latest/quick-start.html
+- creating SimpleApp.scala
+- creating simple.sbt
+-> create a package
+-> put SimpleApp.scala in /spark-2.0.1-bin-hadoop2.7/src/main/scala/
+- $ sbt package
+-> to run
+$ ./bin/spark-shell --master local[2]
+$ ./bin/spark-shell --master spark://ELIs-Mac-mini.home:7077
+
+$ ./bin/spark-submit   --class "SimpleApp"   --master local[4]   target/scala-2.11/simple-project_2.11-1.0.jar
+$ ./bin/spark-submit   --class "SimpleApp"   --master spark://ELIs-Mac-mini.home:7077   target/scala-2.11/simple-project_2.11-1.0.jar
+
+$ ./bin/spark-shell --master spark://ELIs-Mac-mini.home:7077
+$ ./bin/spark-shell --master mesos://localhost:5050
+
+
+------------------------ http://spark.apache.org/docs/2.0.1/spark-standalone.html
+
+
+http://sonra.io/2015/06/03/multiple-spark-worker-instances-on-a-single-node-why-more-of-less-is-more-than-less/
+SPARK_WORKER_INSTANCES=3 SPARK_WORKER_CORES=1 ./sbin/start-slave.sh spark://ELIs-Mac-mini.home:7077
+-> open 3 workers, use 1 core each, works OK
+
+./sbin/start-master.sh
+./sbin/start-slave.sh spark://ELIs-Mac-mini.home:7077
+-> run 1 worker
+SPARK_WORKER_INSTANCES=1 SPARK_WORKER_CORES=1 ./sbin/start-slave.sh spark://ELIs-Mac-mini.home:7077
+./sbin/stop-all.sh
+
+sample in /conf/spark-env.sh
+export SPARK_WORKER_MEMORY=1000m
+
+web ui: http://localhost:8080/
+
+running app on a cluster:
+./bin/spark-shell --master spark://ELIs-Mac-mini.home:7077
+./bin/spark-submit --master spark://ELIs-Mac-mini.home:7077 --class "SimpleApp" target/scala-2.11/simple-project_2.11-1.0.jar
+
+
+MASTER=spark://ELIs-Mac-mini.home:7077 ./bin/run-example SparkPi
+
+
+3 samples running yarn: works OK !!!
+./bin/spark-shell --master yarn --deploy-mode client
+./bin/spark-submit --master yarn --class "SimpleApp" target/scala-2.11/simple-project_2.11-1.0.jar
+./bin/spark-submit --class org.apache.spark.examples.SparkPi \
+    --master yarn \
+    --deploy-mode cluster \
+    --driver-memory 1G \
+    --executor-memory 1G \
+    --executor-cores 1 \
+    examples/jars/spark-examples*.jar \
+    10
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+######################################
+Apache Mesos
+######################################
+/Downloads/mesos-1.0.1/
+/Downloads/mesos-1.0.1/build/
+
+http://spark.apache.org/docs/2.0.1/running-on-mesos.html
+http://mesos.apache.org/gettingstarted/  --> installing, building, initial tests
+
+web ui: http://localhost:5050/
+
+:to run mesos from spark:
+$ cd /spark-2.0.1-bin-hadoop2.7/
+$ ./bin/spark-shell --master mesos://localhost:5050
+
+all works OK!
+./bin/spark-shell --master mesos://localhost:5050
+./bin/spark-shell --master mesos://127.0.0.1:5050
+./bin/spark-submit --master mesos://localhost:5050 --class "SimpleApp" target/scala-2.11/simple-project_2.11-1.0.jar
+./bin/spark-submit --master mesos://localhost:5050 --class "SimpleApp" target/scala-2.11/simple-project_2.11-1.0.jar  --deploy-mode cluster --supervise
+
+./bin/mesos-master.sh --ip=127.0.0.1 --work_dir=/var/lib/mesos
+./bin/mesos-master.sh --ip=127.0.0.1 --work_dir=/var/lib/mesos
+
+
+Didn't proceed with 'cluster modes' anymore:
+http://spark.apache.org/docs/2.0.1/running-on-mesos.html#cluster-mode
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+Marathon -
+https://mesosphere.github.io/marathon/docs/ -- source of command line that works OK
+
+I used the option: From a Tarball
+
+Download and unpack the latest Marathon release.
+$ curl -O http://downloads.mesosphere.com/marathon/v1.3.5/marathon-1.3.5.tgz
+$ tar xzf marathon-1.3.5.tgz
+
+
+MESOS_NATIVE_JAVA_LIBRARY=/usr/local/lib/libmesos.dylib ./bin/start --master zk://localhost:2181,localhost:2181/mesos --zk zk://localhost:2181/marathon
+
+
+./bin/start --master zk://zk1.foo.bar:2181,zk2.foo.bar:2181/mesos --zk zk://zk1.foo.bar:2181,zk2.foo.bar:2181/marathon
+->template
+./bin/start --master zk://127.0.0.1:2181,127.0.0.1:2181/mesos --zk zk://127.0.0.1:2181,127.0.0.1:2181/marathon
+->actual cmd
+
+From Jorrit:
+--master zk://apihack-c18.idigbio.org:2181/mesos --zk zk://apihack-c18.idigbio.org:2181/marathon --http_port 8082 --http_address localhost
+--master zk://apihack-c18.idigbio.org:2181/mesos --zk zk://apihack-c18.idigbio.org:2181/marathon --http_port 8082 --http_address localhost
+
+Patterned by Eli:
+./bin/start --master zk://127.0.0.1:2181/mesos --zk zk://127.0.0.1:2181/marathon --http_port 8082 --http_address localhost
+
+
+
+Marathon uses --master to find the Mesos masters, and 
+              --zk to find ZooKeepers for storing state. 
+              
+              They are separate options because Mesos masters can also be discovered in other ways.
+
+
+https://zookeeper.apache.org/
+installation notes: file:///Users/eliagbayani/Downloads/zookeeper-3.4.9/docs/zookeeperStarted.html
+cd ~/Downloads/zookeeper-3.4.9/
+bin/zkServer.sh start
+-> run server
+
+
+--this is just installing the web interface: e.g. https://mesosphere.github.io/marathon/ ... and not the marathon platform
+install notes from: https://github.com/mesosphere/marathon/tree/master/docs
+followed the Mac OS X steps:
+1. brew install node
+2. Clone the Marathon repository
+git clone https://github.com/eliagbayani/eol_php_code.git
+git clone https://github.com/mesosphere/marathon.git
+cd to marathon
+3. cd to docs folder
+4. Install raml2html
+npm i -g raml2html@4.0.0-beta7  -> this works OK
+npm i -g raml2html              -> this fails
+-> worked after adding permission to some dirs e.g. /Users/eliagbayani/.node-gyp
+5. Generate api.html
+raml2html -i docs/rest-api/public/api/api.raml -o docs/generated/api.html
+6. Install Bundler
+gem install bundler
+7. Install the bundle's dependencies
+bundle install --path vendor/bundle
+8. Start the web server
+bundle exec jekyll serve --watch
+http://127.0.0.1:4000/marathon/
+
+
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+######################################
+Apache Hadoop
+######################################
+[/usr/local/Cellar/hadoop/2.7.3/libexec]
+
+http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
+
+to fix: ssh error: "connect to host localhost port 22: Connection refused"
+http://stackoverflow.com/questions/17335728/connect-to-host-localhost-port-22-connection-refused
+
+brew install hadoop
+In Hadoop's config file:
+  /usr/local/Cellar/hadoop/2.7.3/libexec/etc/hadoop/hadoop-env.sh,
+  /usr/local/Cellar/hadoop/2.7.3/libexec/etc/hadoop/mapred-env.sh and
+  /usr/local/Cellar/hadoop/2.7.3/libexec/etc/hadoop/yarn-env.sh
+$JAVA_HOME has been set to be the output of:
+  /usr/libexec/java_home
+==> Summary
+$  /usr/local/Cellar/hadoop/2.7.3:
+
+start following steps now:
+cd /usr/local/Cellar/hadoop/2.7.3/libexec
+
+--- Standalone Operation: steps works! --- http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html#Standalone_Operation
+$ mkdir input
+$ cp etc/hadoop/*.xml input
+$ bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar grep input output 'dfs[a-z.]+'
+$ cat output/*
+
+--- Pseudo-Distributed Operation --- http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation
+etc/hadoop/core-site.xml: {<value>hdfs://localhost:9000</value> change to: <value>hdfs://0.0.0.0:9000</value>}
+etc/hadoop/hdfs-site.xml:
+**NameNode - http://localhost:50070/ -> works
+**DataNode - http://localhost:50075/ -> works
+
+--- YARN on a Single Node --- http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html#YARN_on_a_Single_Node
+etc/hadoop/mapred-site.xml:
+etc/hadoop/yarn-site.xml:
+Start ResourceManager daemon and NodeManager daemon:
+$ sbin/start-yarn.sh
+ResourceManager - http://localhost:8088/
+When you‚Äôre done, stop the daemons with:
+$ sbin/stop-yarn.sh
+
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+######################################
+Apache Cassandra
+######################################
+Configuring Cassandra
+http://cassandra.apache.org/doc/latest/getting_started/configuring.html
+
+
+---------------------
+There is the: DataStax Distribution of Apache Cassandra
+http://www.planetcassandra.org/cassandra/
+
+Maybe later, if we're going to use Cassandra with PHP and/or Spark
+http://www.planetcassandra.org/apache-cassandra-client-drivers/
+https://github.com/datastax/php-driver/
+http://cassandra.apache.org/doc/latest/getting_started/drivers.html -> PHP and others...
+
+DataStax Academy - Apache Cassandra
+email = eagbayani173@gmail.com
+pw = Apache173 {take note ‚ÄòA‚Äô is all-caps}
+https://academy.datastax.com/downloads/welcome - nice starting point
+
+There is also Cassandra for DataStax here:
+http://www.datastax.com/2012/01/working-with-apache-cassandra-on-mac-os-x
+---------------------
+
+But I used this steps in installing Cassandra in Mac OS X:
+https://gist.github.com/hkhamm/a9a2b45dd749e5d3b3ae
+To have launchd start cassandra now and restart at login:
+  brew services start cassandra
+Or, if you don't want/need a background service you can just run:
+  cassandra -f
+==> Summary
+$ /usr/local/Cellar/cassandra/3.7: 5,703 files, 135.8M
+
+start work:
+$ cd /usr/local/Cellar/cassandra/3.7/bin
+$ ./cqlsh
+
+I used the steps here for my first CQL commands:
+http://www.datastax.com/2012/01/working-with-apache-cassandra-on-mac-os-x
+
+inside cqlsh> 
+create keyspace dev with replication = {'class':'SimpleStrategy','replication_factor':1};
+use dev;
+create table emp (empid int primary key, emp_first varchar, emp_last varchar, emp_dept varchar);
+insert into emp (empid, emp_first, emp_last, emp_dept) values (1,'Eli','Agbayani','Engineering');
+
+---
+Installing and using DataStax OpsCenter
+http://www.datastax.com/2012/01/working-with-apache-cassandra-on-mac-os-x
+
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+terminal working directories: when Eli is testing things
+~/Downloads/mesos-1.0.1/build: 
+~/Downloads/mesos-1.0.1/build: 
+~/Downloads/marathon-1.1.1
+~/Downloads/zookeeper-3.4.9:
+——————
+~/Downloads/spark-2.0.1-bin-hadoop2.7: 
+/usr/local/Cellar/hadoop/2.7.3/libexec: 
+——————
+
+
+Jorrit’s server:
+~/FreshData/c18node15
+
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+Jenkins
+user = eli | pw = e | email = eagbayani173@gmail.com
+
+installed jenkins from (used the OS X installer): https://jenkins.io/
+https://wiki.jenkins-ci.org/display/JENKINS/Thanks+for+using+OSX+Installer
+
+steps to connect jenkins to mesos - https://github.com/jenkinsci/mesos-plugin
+
+Starting/stopping the service
+sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.plist
+sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist
+sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.plist
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+
+/eliagbayani/.ssh/config 
+#for freshdata  account
+
+Host freshdata1
+    User int
+    HostName 128.227.166.240
+    IdentityFile ~/.ssh/id_rsa_freshdata
+
+    I usually ssh into the server with "ssh -D 8080 xxx@xxx" and use a browser with a socks host configured.
+    e.g. 
+    ssh -D 8080 freshdata1
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+orig from Eli: from docs
+$ ./bin/mesos-master.sh --ip=127.0.0.1 --work_dir=/var/lib/mesos
+$ ./bin/mesos-agent.sh --master=127.0.0.1:5050 --work_dir=/var/lib/mesos
+
+from int@c18node15:
+ /usr/sbin/mesos-master --zk=zk://apihack-c18.idigbio.org:2181/mesos --port=5050 --log_dir=/var/log/mesos --ip=127.0.0.1 --quorum=1 --work_dir=/var/lib/mesos
+ /usr/sbin/mesos-slave --master=zk://apihack-c18.idigbio.org:2181/mesos --log_dir=/var/log/mesos --resources=cpus:20;mem:81920 --work_dir=/mnt/data/tmp-mesos
+
+patterned by Eli:
+./bin/mesos-master.sh --zk=zk://127.0.0.1:2181/mesos --port=5050 --log_dir=/var/log/mesos --ip=127.0.0.1 --quorum=1 --work_dir=/var/lib/mesos
+./bin/mesos-slave.sh --master=zk://127.0.0.1:2181/mesos --log_dir=/var/log/mesos --resources=cpus:1;mem:10000 --work_dir=/var/data/tmp-mesos
+./bin/mesos-slave.sh --master=zk://127.0.0.1:2181/mesos --log_dir=/var/log/mesos --resources=cpus:1;mem:10000 --work_dir=/Users/eliagbayani/FreshData/c18node15/data/tmp-mesos
+
+============================================================================================================================
+============================================================================================================================
+http://www.lifeasasysadmin.com/how-to-use-hosts-file-to-override-dns-for-local-testing/
+From time to time you need to test a website locally by domain name without actually changing the live DNS entry.  Fortunately there is an easy way to do this.  When you make a request to the Internet using your local computer it first checks your hosts file for an entry and if one isn’t present it goes out to the Internet DNS servers.
+
+Because of that you can override the DNS servers for your local machine by adding an entry to the hosts file.  To do this open up your hosts file with notepad.  It is located at C:\Windows\System32\drivers\etc.
+
+Once you have it opened, go to the bottom of the file and add a new line.  You will first add the IP address that you want it to resolve to, a space, and then the domain name.  For example, if you are testing a website that you are developing on your local machine that has an internal IP address of 192.168.1.100 and you want to test www.mydomain.com you would add the following line to your hosts file:
+
+192.168.1.100 www.mydomain.com
+
+Save the file and you’re all set!  You should note that if you want to also test mydomain.com you also need to add an entry for it.  Based on the example above it would be:
+
+192.168.1.100 mydomain.com
+============================================================================================================================
+============================================================================================================================
+
+
+
+
+
+
+
+
+
