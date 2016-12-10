@@ -1,3 +1,8 @@
+main jekyll here:
+https://jekyllrb.com/docs/installation/
+
+===================================================
+
 https://eol-jira.bibalex.org/browse/DATA-1622
 
 - Setting up your GitHub Pages site locally with Jekyll
@@ -37,3 +42,35 @@ sudo git push -u origin master
 Step 4: Build your local Jekyll site
 Run your Jekyll site locally:
 $ bundle exec jekyll serve --incremental
+
+===================================================================================
+Running FreshData - Jekyll site:
+
+fork a copy of gimmefreshdata.github.io.git then build jekyll so you can run portal locally: localhost:4000
+
+STEPS TO FORK:
+git clone https://github.com/eliagbayani/gimmefreshdata.github.io.git
+cd to gimmefreshdata.github.io
+git remote -v
+{You'll see the current configured remote repository for your fork.}
+
+git remote add upstream https://github.com/gimmefreshdata/gimmefreshdata.github.io.git
+git remote -v
+{should see 2 origin and 2 upstream}
+
+STEPS TO SYNC:
+https://help.github.com/articles/syncing-a-fork/
+steps to update my fork from main:
+
+    git remote add upstream https://github.com/gimmefreshdata/gimmefreshdata.github.io.git
+    git fetch upstream
+    git merge upstream/master
+    {then 'git push' to clear the red dot in Gitbox}
+
+STEPS to build jekyll:
+$brew install ruby | exit terminal | open terminal again
+$ ruby —-version
+$ jekyll build
+$ jekyll serve --incremental --watch
+open browser: localhost:4000
+-> at this point no file/folder is updated in Gitbox, that is expected since the entries in .gitignore

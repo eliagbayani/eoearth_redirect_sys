@@ -1,0 +1,26 @@
+{
+  "id": "/kafka",
+  "cmd": "cd /Users/eliagbayani/FreshData/c18node15/kafka_2.11-0.9.0.0 && ./bin/kafka-server-start.sh ./config/server.properties --override host.name=localhost",
+  "cpus": 0.1,
+  "mem": 32,
+  "disk": 0,
+  "instances": 1,
+  "portDefinitions": [
+    {
+      "port": 10000,
+      "protocol": "tcp",
+      "labels": {}
+    }
+  ],
+  "uris": [
+    "http://localhost/downloads/kafka_2.11-0.9.0.0.tgz"
+  ],
+  "fetch": [
+    {
+      "uri": "http://localhost/downloads/kafka_2.11-0.9.0.0.tgz",
+      "extract": true,
+      "executable": false,
+      "cache": false
+    }
+  ]
+}

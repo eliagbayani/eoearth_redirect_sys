@@ -169,51 +169,41 @@ http://127.0.0.1:4000/marathon/
 ============================================================================================================================
 ============================================================================================================================
 ============================================================================================================================
-######################################
-Apache Hadoop
-######################################
-[/usr/local/Cellar/hadoop/2.7.3/libexec]
-
-http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
-
-to fix: ssh error: "connect to host localhost port 22: Connection refused"
-http://stackoverflow.com/questions/17335728/connect-to-host-localhost-port-22-connection-refused
-
-brew install hadoop
-In Hadoop's config file:
-  /usr/local/Cellar/hadoop/2.7.3/libexec/etc/hadoop/hadoop-env.sh,
-  /usr/local/Cellar/hadoop/2.7.3/libexec/etc/hadoop/mapred-env.sh and
-  /usr/local/Cellar/hadoop/2.7.3/libexec/etc/hadoop/yarn-env.sh
-$JAVA_HOME has been set to be the output of:
-  /usr/libexec/java_home
-==> Summary
-$  /usr/local/Cellar/hadoop/2.7.3:
-
-start following steps now:
-cd /usr/local/Cellar/hadoop/2.7.3/libexec
-
---- Standalone Operation: steps works! --- http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html#Standalone_Operation
-$ mkdir input
-$ cp etc/hadoop/*.xml input
-$ bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar grep input output 'dfs[a-z.]+'
-$ cat output/*
-
---- Pseudo-Distributed Operation --- http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation
-etc/hadoop/core-site.xml: {<value>hdfs://localhost:9000</value> change to: <value>hdfs://0.0.0.0:9000</value>}
-etc/hadoop/hdfs-site.xml:
-**NameNode - http://localhost:50070/ -> works
-**DataNode - http://localhost:50075/ -> works
-
---- YARN on a Single Node --- http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html#YARN_on_a_Single_Node
-etc/hadoop/mapred-site.xml:
-etc/hadoop/yarn-site.xml:
-Start ResourceManager daemon and NodeManager daemon:
-$ sbin/start-yarn.sh
-ResourceManager - http://localhost:8088/
-When youâ€™re done, stop the daemons with:
-$ sbin/stop-yarn.sh
+other topics:
+https://cwiki.apache.org/confluence/display/Hive/Home
+http://stackoverflow.com/questions/39585682/apache-spark-backend-servers
+https://medium.com/@anicolaspp/apache-spark-as-a-distributed-sql-engine-4373e254e0f9#.sy2iqx3nh
+https://hackernoon.com/extending-our-spark-sql-query-engine-5f4a088de986#.vwt9fxgcf
 
 ============================================================================================================================
+http://www.cyberciti.biz/faq/appleosx-bash-unix-change-set-path-environment-variable/
+
+how to add to your PATH variable
+
+e.g. adding "/usr/local/Cellar/php54/5.4.45_6/bin"
+
+3-steps:
+$ vi $HOME/.bash_profile
+$ export PATH=$PATH:/usr/local/Cellar/php54/5.4.45_6/bin
+$ source $HOME/.bash_profile
+
+ÑÑÑÑadding java_home in [~/.bash_profile]
+
+For OS X Yosemite 10.10, follow these steps
+$ vi ~/.bash_profile
+
+Add the following line in the file and save it
+export JAVA_HOME=$(/usr/libexec/java_home)
+
+Then in the terminal type the following two commands:
+$ source ~/.bash_profile
+$ echo $JAVA_HOME
+
+----
+current JAVA_HOME value: /Library/Java/JavaVirtualMachines/jdk1.8.0_51.jdk/Contents/Home
+old JAVA_HOME value: /usr/libexec/java_home
+============================================================================================================================
+
 ============================================================================================================================
 ============================================================================================================================
 ============================================================================================================================
@@ -291,6 +281,10 @@ JorritÕs server:
 ============================================================================================================================
 ============================================================================================================================
 Jenkins
+also nice tutorials here: https://www.tutorialspoint.com/jenkins/jenkins_setup_build_jobs.htm
+----
+orig "Workspace Root Directory" : ${JENKINS_HOME}/workspace/${ITEM_FULLNAME}
+----
 user = eli | pw = e | email = eagbayani173@gmail.com
 
 installed jenkins from (used the OS X installer): https://jenkins.io/
@@ -302,11 +296,98 @@ Starting/stopping the service
 sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.plist
 sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist
 sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.plist
-============================================================================================================================
-============================================================================================================================
-============================================================================================================================
-============================================================================================================================
 
+------
+put symlink to wget, 
+
+ln -s /opt/local/bin/wget /usr/local/bin/wget
+ln -s /usr/local/bin/wget /opt/local/bin/wget
+
+put symlink to sh,
+ln -s /bin/sh /usr/local/bin/sh
+
+put symlink to rm,
+ln -s /bin/rm /usr/local/bin/rm
+# ln -s /usr/bin/unzip /usr/local/bin/unzip
+
+/bin/rm
+/usr/bin/unzip
+
+
+Additional dependencies for Jenkins when using FreshData:
+1. Install:
+- brew install wget
+- brew install md5sha1sum
+- others needed: sh, rm, unzip, etc.
+
+
+2. Edit file: org.jenkins-ci.plist. Add PATH variable for all those tools needed processing the sh scripts when building jobs.
+e.g.
+<dict>
+  <key>JENKINS_HOME</key>
+  <string>/Users/Shared/Jenkins/Home</string>
+  <key>PATH</key>
+  <string>/usr/local/bin:/usr/bin</string>
+</dict>
+
+3. Another option for #2 is to put symlinks, so Jenkins can find the command being used.
+e.g.
+ln -s /usr/local/bin/wget /opt/local/bin/wget
+ln -s /bin/sh /usr/local/bin/sh
+
+
+
+-----------------
+brew install md5sha1sum
+eliagbayani@ELIs-Mac-mini /: which sha1sum
+/usr/local/bin/sha1sum
+-----------------
+remote jenkins for freshdata:
+http://archive.effechecka.org/configure
+-----------------
+
+--------------------
+http://192.168.15.5:7077/
+from console text:
+
+curl -X POST http://192.168.15.5:7077/v1/submissions/create --header 'Content-Type:application/json;charset=UTF-8' --data '{
+  "action" : "CreateSubmissionRequest",
+  "appArgs" : [ "file:///Users/Shared/Jenkins/Home/workspace/reeflifesurvey/dwca/meta.xml" ],
+  "appResource" : "file:///Users/eliagbayani/FreshData/z_remote_jars/iDigBio-LD-assembly-1.5.5.jar",
+  "clientSparkVersion" : "1.6.1",
+  "environmentVariables" : {
+    "SPARK_ENV_LOADED" : "1"
+  },
+  "mainClass" : "DarwinCoreToParquet",
+  "sparkProperties" : {
+    "spark.driver.supervise" : "false",
+    "spark.app.name" : "dwc2parquet",
+    "spark.eventLog.enabled": "true",
+    "spark.submit.deployMode" : "cluster",
+    "spark.master" : "mesos://192.168.15.5:7077",
+    "spark.executor.memory" : "20g",
+    "spark.driver.memory" : "6g",
+    "spark.task.maxFailures" : 1
+  }
+}'
+
+
+
+/mnt/data/jenkins/workspace/reeflifesurvey
+/mnt/data/jenkins
+/mnt/data/jenkins/workspace/reeflifesurvey/dwca/meta.xml" ],
+
+  "appResource" : "file:///home/int/jobs/iDigBio-LD-assembly-1.5.3.jar",
+
+
+/mnt/data/jenkins/jobs/reeflifesurvey/builds/20/archive/dwca/observations.txt.parquet to /mnt/data/repository/gbif-idigbio.parquet/source\=reeflifesurvey/date\=20160922
+/mnt/data/jenkins/jobs/reeflifesurvey/builds/20/archive/dwca/observations.txt.parquet /mnt/data/repository/gbif-idigbio.parquet/source=reeflifesurvey/date=20160922
+
+
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
+============================================================================================================================
 /eliagbayani/.ssh/config 
 #for freshdata  account
 
@@ -350,6 +431,33 @@ Save the file and youÕre all set!  You should note that if you want to also test
 
 192.168.1.100 mydomain.com
 ============================================================================================================================
+mailgun
+account name: Eli Agbayani
+your name: eagbayani
+email: eagbayani173@gmail.com
+pw = "mail" + favorite no. (name as no. backwards) + "x"
+
+pubkey-b8ba374d1e5a6676375fc74b26fbc9b3
+key-db412ea1ead52df7846edd8917d781c8
+
+sandbox22f0c95871f748109575972d83709f71 -> probably should work
+
+                                                                                         
+curl -s --user 'api:key-db412ea1ead52df7846edd8917d781c8'     https://api.mailgun.net/v3/sandbox22f0c95871f748109575972d83709f71.mailgun.org/messages     \
+-F from='Mailgun Sandbox <postmaster@sandbox22f0c95871f748109575972d83709f71.mailgun.org>'     -F to='eagbayani <eagbayani173@gmail.com>'     \
+-F subject='Hello eagbayani'     -F text='Congratulations eagbayani, you just sent an email with Mailgun!  You are truly awesome!'
+
+
+curl -s --user 'api:key-db412ea1ead52df7846edd8917d781c8' \
+    https://api.mailgun.net/v3/sandbox22f0c95871f748109575972d83709f71.mailgun.org/messages \
+    -F from='Excited User <postmaster@sandbox22f0c95871f748109575972d83709f71.mailgun.org>' \
+    -F to=eli@eol.org \
+    -F subject='Hello' \
+    -F text='Testing some Mailgun awesomness!'
+
+
+============================================================================================================================
+Apache Hive : https://cwiki.apache.org/confluence/display/Hive/Home
 ============================================================================================================================
 
 

@@ -1,0 +1,38 @@
+https://eol-jira.bibalex.org/browse/TRAM-404
+
+Hi Jeremy,
+
+Attached is the public key for my other work station (MacMini).
+Can you please add this public key to authorized keys for user:
+- [eagbayani] at 10.252.248.38 {harvest machine} and
+- [eagbayani] at 10.252.248.39 {archive server}
+
+Thanks,
+Eli
+
+host harvest
+  User eagbayani
+  HostName 10.252.248.38
+
+host archive
+  User eagbayani
+  HostName 10.252.248.39
+
+===========================
+https://eol-jira.bibalex.org/browse/TRAM-298?focusedCommentId=60440&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-60440
+Hi [~jrice],
+
+What server is opendata.eol.org?
+Can I access it as well? same how I access the other (harvest, archive) servers.
+I need to divide the [eol_data-2016-12-08.tgz] into smaller chunks.
+My internet can't download one big file but can do multiple smaller ones.
+I need to:
+1. split:
+  $ tar cz eol_data-2016-12-08.tgz | split -b 300000000 - ./split.tgz_
+2. then download each file locally and merge:
+  $ cat split.tgz_* | tar xz
+
+Hi [~jhammock],
+I assume the opendata.eol.org is where we will implement CKAN.
+
+======================================================

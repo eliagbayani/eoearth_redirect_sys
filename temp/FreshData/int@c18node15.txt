@@ -84,8 +84,16 @@ scp -r freshdata1:/home/int/data/gbif-idigbio.parquet/source=inaturalist  ~/Fres
 scp -r freshdata1:/home/int/data/gbif-idigbio.parquet/source=idigbio  ~/FreshData/c18node15/data/gbif-idigbio.parquet/source=idigbio
 scp -r freshdata1:/home/int/data/gbif-idigbio.parquet/source=gbif  ~/FreshData/c18node15/data/gbif-idigbio.parquet/source=gbif
 
-===============================================================================
 
+scp -r freshdata1:/home/int/data/traitbank  ~/FreshData/c18node15/data/traitbank
+
+scp -r freshdata1:/home/int/jobs/iDigBio-LD-assembly-1.5.3.jar  //home/int/jobs
+
+"appResource" : "file:///home/int/jobs/iDigBio-LD-assembly-1.5.3.jar",
+
+
+
+===============================================================================
 $ git clone https://github.com/eliagbayani/effechecka.git
 $ cd effechecka
 $ git remote add upstream3 https://github.com/jhpoelen/effechecka.git
@@ -98,10 +106,8 @@ $ git clone https://github.com/eliagbayani/idigbio-spark.git
 $ cd idigbio-spark
 $ git remote add upstream3 https://github.com/bio-guoda/idigbio-spark.git
 
-
 others: 
 http://sockslist.net/articles/socks-firefox-how-to
-
 ===============================================================================
 1. configure socks for browser:
 Advanced - Network - Settings...
@@ -115,7 +121,6 @@ $ ssh -D 8080 freshdata1
 Jenkins http://localhost:8080/
 Marathon http://localhost:8082/
 Mesos http://localhost:5050/
-
 ===============================================================================
 Hi Jorrit, you mentioned these:
 1. kafka started through marathons (see marathon ui)
@@ -382,6 +387,26 @@ http://learnaholic.me/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/
 
 ####################################################################################################################
 ####################################################################################################################
+int@c18node15:~$ ps -ef | grep cassandra
+int       3907  3771  0 02:04 pts/1    00:00:00 grep --color=auto cassandra
+109      27140     1 12 Aug24 ?        11-01:30:23 java -ea -javaagent:/usr/share/cassandra/lib/jamm-0.3.0.jar -XX:+CMSClassUnloadingEnabled -XX:+UseThreadPriorities -XX:ThreadPriorityPolicy=42 -Xms8192M -Xmx8192M -Xmn2048M -XX:+HeapDumpOnOutOfMemoryError -Xss256k -XX:StringTableSize=1000003 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -XX:SurvivorRatio=8 -XX:MaxTenuringThreshold=1 -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly -XX:+UseTLAB -XX:CompileCommandFile=/etc/cassandra/hotspot_compiler -XX:CMSWaitDuration=10000 -XX:+CMSParallelInitialMarkEnabled -XX:+CMSEdenChunksRecordAlways -XX:CMSWaitDuration=10000 -XX:+UseCondCardMark -Djava.net.preferIPv4Stack=true -Dcassandra.jmx.local.port=7199 -XX:+DisableExplicitGC -Dlogback.configurationFile=logback.xml -Dcassandra.logdir=/var/log/cassandra -Dcassandra.storagedir= -Dcassandra-pidfile=/var/run/cassandra/cassandra.pid -cp /etc/cassandra:/usr/share/cassandra/lib/ST4-4.0.8.jar:/usr/share/cassandra/lib/airline-0.6.jar:/usr/share/cassandra/lib/antlr-runtime-3.5.2.jar:/usr/share/cassandra/lib/commons-cli-1.1.jar:/usr/share/cassandra/lib/commons-codec-1.2.jar:/usr/share/cassandra/lib/commons-lang3-3.1.jar:/usr/share/cassandra/lib/commons-math3-3.2.jar:/usr/share/cassandra/lib/compress-lzf-0.8.4.jar:/usr/share/cassandra/lib/concurrentlinkedhashmap-lru-1.4.jar:/usr/share/cassandra/lib/disruptor-3.0.1.jar:/usr/share/cassandra/lib/guava-16.0.jar:/usr/share/cassandra/lib/high-scale-lib-1.0.6.jar:/usr/share/cassandra/lib/jackson-core-asl-1.9.2.jar:/usr/share/cassandra/lib/jackson-mapper-asl-1.9.2.jar:/usr/share/cassandra/lib/jamm-0.3.0.jar:/usr/share/cassandra/lib/javax.inject.jar:/usr/share/cassandra/lib/jbcrypt-0.3m.jar:/usr/share/cassandra/lib/jline-1.0.jar:/usr/share/cassandr/lib/jna-4.0.0.jar:/usr/share/cassandra/lib/json-simple-1.1.jar:/usr/share/cassandra/lib/libthrift-0.9.2.jar:/usr/share/cassandra/lib/logback-classic-1.1.2.jar:/usr/share/cassandra/lib/logback-core-1.1.2.jar:/usr/share/cassandra/lib/lz4-1.2.0.jar:/usr/share/cassandra/lib/metrics-core-2.2.0.jar:/usr/share/cassandra/lib/netty-all-4.0.23.Final.jar:/usr/share/cassandra/lib/reporter-config-2.1.0.jar:/usr/share/cassandra/lib/slf4j-api-1.7.2.jar:/usr/share/cassandra/lib/snakeyaml-1.11.jar:/usr/share/cassandra/lib/snappy-java-1.0.5.2.jar:/usr/share/cassandra/lib/stream-2.5.2.jar:/usr/share/cassandra/lib/super-csv-2.1.0.jar:/usr/share/cassandra/lib/thrift-server-0.3.7.jar:/usr/share/cassandra/apache-cassandra-2.1.15.jar:/usr/share/cassandra/apache-cassandra-thrift-2.1.15.jar:/usr/share/cassandra/apache-cassandra.jar:/usr/share/cassandra/cassandra-driver-core-2.0.9.2.jar:/usr/share/cassandra/netty-3.9.0.Final.jar:/usr/share/cassandra/stress.jar: -XX:HeapDumpPath=/var/lib/cassandra/java_1472012060.hprof -XX:ErrorFile=/var/lib/cassandra/hs_err_1472012060.log org.apache.cassandra.service.CassandraDaemon
+int@c18node15:~$ 
+
+
+int@c18node15:~$ ps -ef | grep jenkins
+int       3927  3771  0 02:06 pts/1    00:00:00 grep --color=auto jenkins
+jenkins  24361     1  0 Aug17 ?        00:00:01 /usr/bin/daemon --name=jenkins --inherit --env=JENKINS_HOME=/mnt/data/jenkins --output=/var/log/jenkins/jenkins.log --pidfile=/var/run/jenkins/jenkins.pid -- /usr/bin/java -Djava.awt.headless=true -jar /usr/share/jenkins/jenkins.war --webroot=/var/cache/jenkins/war --httpPort=8080
+
+jenkins  24362 24361  0 Aug17 ?        11:26:03 /usr/bin/java -Djava.awt.headless=true -jar /usr/share/jenkins/jenkins.war --webroot=/var/cache/jenkins/war --httpPort=8080
+int@c18node15:~$ 
+
+####################################################################################################################
+####################################################################################################################
+
+~/FreshData/c18node15/mesos-0.23.1/build: 
+~/FreshData/c18node15/mesos-0.23.1/build: 
+~/Downloads/zookeeper-3.4.9: 
+~/Downloads/marathon-1.1.1: 
 
 
 

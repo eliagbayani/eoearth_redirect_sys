@@ -1,20 +1,26 @@
 Setting-up FreshData locally on a Mac OS X (Yosemite ver 10.10.5)
 
+Purpose of which is to understand how the different applications are used, connected and installed locally on a Mac.
+
 A. Install the following, in this order:
+A.1. Apache Mesos
+A.2. Apache ZooKeeper
+A.3. Apache Marathon (pre-requisites are Apache Mesos and Apache ZooKeeper)
+A.4. Apache Cassandra
+A.5. Jenkins
+A.6. Jekyll
+A.7. Apache or NGINX
 
-1. Apache Mesos
-2. Apache ZooKeeper
-3. Apache Marathon (pre-requisites are Apache Mesos and Apache ZooKeeper)
-4. Apache Cassandra
-5. Jenkins
-
-B.
-C.
-D. Setup local so that api.effecheck.org points to 127.0.0.1:8888
+B. Run applications:
+B.1. Run each as a system service: Mesos, ZooKeeper, Marathon, Cassandra
+B.2. Run through Marathon UI: kafka, spark-mesos-cluster-dispatcher, effechecka-notifier, effechecka-api
+B.3. Setup local so that api.effecheck.org points to 127.0.0.1:8888
+B.4. http://gimmefreshdata.github.io/
 
 
+A. Install the following, in this order:
 ==================================================================
-1 Apache Mesos
+A.1 Apache Mesos
 I followed the steps to download, install, run examples here:
 http://mesos.apache.org/gettingstarted/
 An instruction to build is also available here, if you need to build your package.
@@ -32,9 +38,9 @@ $ ./bin/mesos-agent.sh --master=127.0.0.1:5050 --work_dir=/var/lib/mesos
 # Visit the mesos web page.
 http://127.0.0.1:5050
 ==================================================================
-2. Apache ZooKeeper
-I used the ZooKeeper site: https://zookeeper.apache.org/ --> http://www.apache.org/dyn/closer.cgi/zookeeper/
-2.1 download the installation file (e.g. zookeeper-3.4.9.tar.gz)
+A.2. Apache ZooKeeper
+I used the ZooKeeper site: https://zookeeper.apache.org/
+2.1 download the installation file (e.g. zookeeper-3.4.9.tar.gz) from http://www.apache.org/dyn/closer.cgi/zookeeper/
 2.2 extract and go to installation notes found here:
 installation notes: ~/Downloads/zookeeper-3.4.9/docs/zookeeperStarted.html
 2.3 Create the configuration file described in the doc.
@@ -43,7 +49,7 @@ $ cd ~/Downloads/zookeeper-3.4.9/
 $ bin/zkServer.sh start
 *By default, ZooKeeper runs on port 2181
 ==================================================================
-3. Apache Marathon
+A.3. Apache Marathon
 I used the steps here: https://mesosphere.github.io/marathon/docs/
 I used the option: From a Tarball
 Download and unpack the latest Marathon release.
@@ -61,22 +67,23 @@ Launch ZooKeeper:
 
 Run Marathon server: 
 ~/Downloads/marathon-1.1.1: ./bin/start --master zk://127.0.0.1:2181/mesos --zk zk://127.0.0.1:2181/marathon --http_port 8082 --http_address localhost
-
 ==================================================================
-4. Apache Cassandra
+A.4. Apache Cassandra
 Configuring Cassandra: http://cassandra.apache.org/doc/latest/getting_started/configuring.html
 
 I used this steps in installing Cassandra in Mac OS X:
 https://gist.github.com/hkhamm/a9a2b45dd749e5d3b3ae
 To have launchd start cassandra now and restart at login:
   brew services start cassandra
+  brew services stop cassandra
+  ->to stop service
 Or, if you don't want/need a background service you can just run:
   cassandra -f
 ==> Summary
 $ /usr/local/Cellar/cassandra/3.7: 5,703 files, 135.8M
 
 ==================================================================
-5. Jenkins
+A.5. Jenkins
 Installed jenkins from (used the OS X installer): https://jenkins.io/
 https://wiki.jenkins-ci.org/display/JENKINS/Thanks+for+using+OSX+Installer
 
@@ -86,8 +93,141 @@ Starting/stopping the service
 sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.plist
 sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist
 ==================================================================
+A.6. Jekyll
+Main Jekyll site: https://jekyllrb.com/docs/usage/
+Followed steps here to install Jekyll on Mac OS X: https://help.github.com/articles/setting-up-your-github-pages-site-locally-with-jekyll/
+
+Requirements:
+$ brew install ruby
+close terminal, open new terminal, 
+$ ruby —-version
+-> check ruby version; ruby 2.3.1p112 (2016-04-26 revision 54768) [x86_64-darwin14]
+$ gem install bundler
+
+Step 1: Create a local repository for your Jekyll site
+git init eli-jekyll-site
+cd eli-jekyll-site
+
+Step 2: Install Jekyll using Bundler
+Add to Gemfile these two lines:
+source 'https://rubygems.org'
+gem 'github-pages', group: :jekyll_plugins
+
+Step 3 (optional): Generate Jekyll site files
+then edit Gemfile:
+- comment this line: "jekyll", "3.2.1"
+- uncomment this line: gem "github-pages", group :jekyll_plugins
+
+Step 4 Build your local Jekyll site
+bundle exec jekyll new . --force
+
+==================================================================
+A.7. Apache or NGINX
+I chose Apache since I'm using it already for other projects.
+==================================================================
 
 
+B. Run applications:
+
+I was given by Jorrit access to server c18node15 as user 'int'. 
+Here I copied some of the folders directly to my local machine.
+If folder starts with /c18node15/, that means that is copied from the remote server int@c18node15.
+==================================================================
+B.1. Run each as a system service: Mesos, ZooKeeper, Marathon, Cassandra (in order)
+Enter in command-line the following entries:
+
+Mesos: (run both master and slave)
+c18node15/mesos-0.23.1/build: ./bin/mesos-master.sh --zk=zk://127.0.0.1:2181/mesos --port=5050 --log_dir=/var/log/mesos --ip=127.0.0.1 --quorum=1 --work_dir=/var/lib/mesos
+c18node15/mesos-0.23.1/build: ./bin/mesos-slave.sh --master=zk://127.0.0.1:2181/mesos --log_dir=/var/log/mesos --resources=cpus:1;mem:10000 --work_dir=/Users/eliagbayani/FreshData/c18node15/data/tmp-mesos
+Check web UI: http://localhost:5050/
+
+ZooKeeper:
+~/Downloads/zookeeper-3.4.9: bin/zkServer.sh start
+
+Marathon:
+~/Downloads/marathon-1.1.1: MESOS_NATIVE_JAVA_LIBRARY=/usr/local/lib/libmesos.dylib ./bin/start --master zk://127.0.0.1:2181/mesos --zk zk://127.0.0.1:2181/marathon --http_port 8082 --http_address localhost
+Check web UI: http://localhost:8082/
+
+Cassandra:
+/cassandra -f
+->that is if this hasn't ran yet upon boot.
+
+==================================================================
+B.2. Run through Marathon UI all 4 apps: kafka, spark-mesos-cluster-dispatcher, effechecka-notifier, effechecka-api
+
+I. Sources:
+- For kafka:
+I copied this folder /kafka_2.11-0.9.0.0/ from remote c18node15
+
+- For spark-mesos-cluster-dispatcher:
+I downloaded this file: http://d3kbcqa49mib13.cloudfront.net/spark-2.0.1-bin-hadoop2.7.tgz and extracted it.
+Gives me the folder: /effechecka-master/
+First, edit /effechecka-master/run.sh, so it reflects your local setup.
+I had mine have this entry:
+
+  #!/bin/bash
+  sbt "run-main effechecka.WebApi" \
+  -Deffechecka.host=0.0.0.0 \
+  -Deffechecka.data.dir=/Users/eliagbayani/FreshData/c18node15/data/ \
+  -Deffechecka.spark.master.url=mesos://127.0.0.1:5050 \
+  -Deffechecka.spark.job.jar=/Users/eliagbayani/FreshData/z_remote_jars/iDigBio-LD-assembly-1.5.5.jar
 
 
+- For effechecka-notifier, effechecka-api:
+I downloaded this file https://github.com/jhpoelen/effechecka/archive/master.zip and extracted it.
+Gives me the folder: /spark-2.0.1-bin-hadoop2.7/
+
+II. Using Marathon UI (http://localhost:8082/), we will launch these 4 applications.
+Applications -> Create Application -> then load the respective json files for each:
+
+Edit each json file so it reflects your local setup (path where files are located in your system).
+Then copy-paste in Marathon UI.
+
+kafka.json
+spark-mesos-cluster-dispatcher.json
+effechecka-notifier.json
+effechecka-api.json
+
+As of now, I'm able to launch 3 of 4 apps successfully. My 'effechecka-api' is still unhealthy (failing). Some configuration or file(s) is missing for this app.
+
+==================================================================
+B.3. Setup local system so that api.effecheck.org points to 127.0.0.1:8888
+
+Steps:
+1. Enter these two lines on command-line
+$ sudo ifconfig lo0 10.0.0.1 alias
+$ echo "rdr pass on lo0 inet proto tcp from any to 10.0.0.1 port 80 -> 127.0.0.1 port 8888" | sudo pfctl -ef -
+
+2. Then edit your /etc/hosts or /private/etc/hosts file and add the following line to map your domain to 10.0.0.1.
+10.0.0.1 api.effechecka.org
+
+3. Now if your browser requests for api.effechecka.org it will point to your local 127.0.0.1:8888
+
+==================================================================
+B.4. http://gimmefreshdata.github.io/
+
+Running FreshData - a Jekyll site:
+Fork a copy of gimmefreshdata.github.io.git then build jekyll so you can run portal locally: localhost:4000
+
+7.1. Fork a copy of gimmefreshdata.github.io.git to your own account (e.g. https://github.com/eliagbayani)
+7.2  Clone it:
+$ git clone https://github.com/eliagbayani/gimmefreshdata.github.io.git
+$ cd to gimmefreshdata.github.io
+(Optional) Add an upstream to original repo:
+$ git remote add upstream https://github.com/gimmefreshdata/gimmefreshdata.github.io.git
+
+Steps to update my fork from main:
+$ git fetch upstream
+$ git merge upstream/master
+
+STEPS to build jekyll:
+$ brew install ruby | exit terminal | open terminal again
+$ jekyll build
+$ jekyll serve --incremental --watch
+open browser: localhost:4000
+
+==================================================================
+
+This document is as of 23-Nov-2016. I expect updates in the next days to come. 
+Especially regarding the failing (unhealthy) 'effechecka-api'.
 

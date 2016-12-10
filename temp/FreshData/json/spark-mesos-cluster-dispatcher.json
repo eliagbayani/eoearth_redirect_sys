@@ -1,0 +1,38 @@
+{
+  "id": "/spark-mesos-cluster-dispatcher",
+  "cmd": "cd /Users/eliagbayani/FreshData/another_server/spark-2.0.1-bin-hadoop2.7 && chmod u+x bin/spark-class && MESOS_NATIVE_JAVA_LIBRARY=/usr/local/lib/libmesos.dylib bin/spark-class org.apache.spark.deploy.mesos.MesosClusterDispatcher --master mesos://127.0.0.1:5050",
+  "cpus": 0.1,
+  "mem": 32,
+  "disk": 0,
+  "instances": 1,
+  "healthChecks": [
+    {
+      "path": "/",
+      "protocol": "HTTP",
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "ignoreHttp1xx": false,
+      "port": 8081
+    }
+  ],
+  "portDefinitions": [
+    {
+      "port": 10001,
+      "protocol": "tcp",
+      "labels": {}
+    }
+  ],
+  "uris": [
+    "http://localhost/downloads/spark-2.0.1-bin-hadoop2.7.tgz"
+  ],
+  "fetch": [
+    {
+      "uri": "http://localhost/downloads/spark-2.0.1-bin-hadoop2.7.tgz",
+      "extract": true,
+      "executable": false,
+      "cache": false
+    }
+  ]
+}
