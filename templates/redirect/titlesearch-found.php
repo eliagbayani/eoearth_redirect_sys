@@ -2,7 +2,8 @@
 $url     = self::create_url($title);
 $old_url = self::create_old_url();
 ?>
-
+<?php
+/* works OK, commented because shift of scheme
 <table id="redirect_table" align="center" cellpadding="15">
     <tr>
       <th colspan="2">www.eoearth.org has moved to a Wiki platform.</th>
@@ -25,9 +26,11 @@ $old_url = self::create_old_url();
     </td></tr>
     <tr><td colspan="2">Or you can click now on the new URL to proceed.</td></tr>
 </table>
-
-<?php
-/* another option
-sleep(10); header("Location: $url");
 */
+?>
+<?php
+// /* another option
+// sleep(10); 
+header("Location: $url");
+// */
 ?>

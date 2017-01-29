@@ -2,7 +2,8 @@
 $old_url         = self::create_old_url();
 $search_page_url = self::create_search_page_url();
 ?>
-
+<?php
+/* works OK, commented because shift of scheme
 <table id="redirect_table" align="center" cellpadding="15">
     <tr>
       <th colspan="2">www.eoearth.org has moved to a Wiki platform.</th>
@@ -19,9 +20,11 @@ $search_page_url = self::create_search_page_url();
         <td>: <a href="<?php echo $search_page_url ?>"><?php echo $search_page_url ?></a></td>
     </tr>
 </table>
-
-<?php
-/* another option
-sleep(10); header("Location: $url");
 */
+?>
+<?php
+// /* another option
+// sleep(10); 
+header("Location: $search_page_url");
+// */
 ?>
