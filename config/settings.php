@@ -24,8 +24,16 @@ define('USERNAME', 'root');
 define('PASSWORD', 'm173');
 define('DBNAME', 'redirect_eoearth');
 
-// define('WIKI_DOMAIN', 'editors.eol.localhost');
+/* for Mac mini
+define('WIKI_DOMAIN', 'editors.eol.localhost');
+define('HTTP_PROTOCOL', 'http://'); //for MacMini
+*/
+
+// /* for eol-archive
 define('WIKI_DOMAIN', 'editors.eol.org');
+define('HTTP_PROTOCOL', 'https://'); //for eol-archive --- wasn't implemented really since .htaccess in editors.eol.org was used to auto-direct from http to https
+// */
+
 define('MEDIAWIKI_FOLDER', 'eoearth');
 
 ?>
